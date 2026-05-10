@@ -1,0 +1,39 @@
+{
+  "id": "token-defaults",
+  "title": "Token Defaults",
+  "description": "Select from a set of default values for token properties when creating new tokens.",
+  "version": "0.0.1",
+  "manifestPlusVersion": "1.2.0",
+  "authors": [
+    {
+      "name": "DeadPanMatt"
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/module.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+
+  "socket": true,
+  "url": "https://github.com/DeadPanMatt/token-defaults",
+  "manifest": "https://raw.githubusercontent.com/DeadPanMatt/token-defaults/main/module.json",
+  "download": "https://github.com/DeadPanMatt/token-defaults/archive/refs/tags/v0.0.1.zip",
+  "readme": "https://raw.githubusercontent.com/DeadPanMatt/token-defaults/main/readme.md",
+  "changelog": "https://raw.githubusercontent.com/DeadPanMatt/token-defaults/main/CHANGELOG.md",
+  "bugs": "https://github.com/DeadPanMatt/token-defaults/issues",
+  "license": "MIT"
+
+}

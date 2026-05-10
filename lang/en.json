@@ -1,0 +1,21 @@
+{
+  "TOKEN_DEFAULTS.Manager.title": "Token Defaults — Presets",
+  "TOKEN_DEFAULTS.Manager.save": "Save",
+  "TOKEN_DEFAULTS.Manager.new": "New Preset",
+  "TOKEN_DEFAULTS.Manager.delete": "Delete preset",
+  "TOKEN_DEFAULTS.Manager.newDefaultName": "New Preset",
+  "TOKEN_DEFAULTS.Manager.empty": "No presets yet. Click \"New Preset\" to create one.",
+
+  "TOKEN_DEFAULTS.Menu.presetManager.name": "Token Default Presets",
+  "TOKEN_DEFAULTS.Menu.presetManager.label": "Manage Presets",
+  "TOKEN_DEFAULTS.Menu.presetManager.hint": "Create and edit token presets to apply when actors are placed on a scene.",
+
+  "TOKEN_DEFAULTS.Sidebar.label": "Default preset:",
+  "TOKEN_DEFAULTS.Sidebar.none": "None",
+
+  "TOKEN_DEFAULTS.Field.displayName": "Display Name",
+  "TOKEN_DEFAULTS.Field.displayBars": "Display Bars",
+  "TOKEN_DEFAULTS.Field.disposition": "Disposition",
+  "TOKEN_DEFAULTS.Field.actorLink": "Link Actor Data",
+  "TOKEN_DEFAULTS.Field.lockRotation": "Lock Rotation"
+}

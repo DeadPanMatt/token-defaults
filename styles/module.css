@@ -1,0 +1,84 @@
+/* Preset manager window */
+.token-defaults.preset-manager .presets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-bottom: 0.75em;
+}
+
+.token-defaults .preset {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 4px;
+  padding: 0.5em 0.75em;
+}
+
+.token-defaults .preset legend {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  width: 100%;
+}
+
+.token-defaults .preset legend input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.token-defaults .preset legend button.icon {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  line-height: 1;
+}
+
+.token-defaults .field {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) 1fr;
+  gap: 0.5em;
+  align-items: center;
+  margin: 0.25em 0;
+}
+
+.token-defaults .field .enable {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  margin: 0;
+}
+
+.token-defaults .field .enable input[type="checkbox"] {
+  flex: 0 0 auto;
+}
+
+.token-defaults .new-preset {
+  width: 100%;
+}
+
+.token-defaults .hint {
+  font-style: italic;
+  opacity: 0.75;
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* Sidebar dropdown */
+.token-defaults-picker {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  border-bottom: 1px solid var(--color-border-light-tertiary, #999);
+  font-size: var(--font-size-12, 12px);
+}
+
+.token-defaults-picker label {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.token-defaults-picker select {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+}
