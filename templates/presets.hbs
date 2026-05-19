@@ -1,34 +1,95 @@
+<div class="preset-manager-body">
 <section class="presets">
-  {{#each presets as |p|}}
+
+  {{#if builtins.length}}
+  <details class="defaults-panel">
+    <summary class="defaults-toggle">
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>{{localize "TOKEN_DEFAULTS.Manager.viewDefaults"}}</span>
+    </summary>
+    {{#each builtins as |p|}}
+    <fieldset class="preset builtin" data-preset-id="{{p.id}}">
+      <legend>
+        <span class="builtin-name">{{p.name}}</span>
+        <span class="builtin-tag">{{localize "TOKEN_DEFAULTS.Manager.builtinTag"}}</span>
+      </legend>
+      {{#each p.sections as |s|}}
+      <details class="section" open>
+        <summary class="section-toggle"><i class="fa-solid fa-chevron-right"></i> {{localize s.label}}</summary>
+        {{#each s.fields as |f|}}
+        <div class="field {{f.type}}">
+          {{#if (eq f.type "boolean")}}
+          <label class="bool">
+            <input type="checkbox" {{#if f.value}}checked{{/if}} disabled/>
+            <span>{{localize f.label}}</span>
+          </label>
+          {{else}}
+          <span class="field-label">{{localize f.label}}</span>
+          {{#if (eq f.type "select")}}
+          <select disabled>
+            {{#each f.choices as |c|}}
+            <option value="{{c.value}}" {{#if c.selected}}selected{{/if}}>{{c.label}}</option>
+            {{/each}}
+          </select>
+          {{else if (eq f.type "number")}}
+          <range-picker value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}" disabled></range-picker>
+          {{else if (eq f.type "color")}}
+          <color-picker value="{{f.value}}" disabled></color-picker>
+          {{/if}}
+          {{/if}}
+        </div>
+        {{/each}}
+      </details>
+      {{/each}}
+    </fieldset>
+    {{/each}}
+  </details>
+  {{/if}}
+
+  {{#each userPresets as |p|}}
   <fieldset class="preset" data-preset-id="{{p.id}}">
     <legend>
       <input type="text" name="presets.{{p.id}}.name" value="{{p.name}}" placeholder="Preset name"/>
+      <button type="button" class="icon" data-action="applyDefaults" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_DEFAULTS.Manager.applyDefaults'}}">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
       <button type="button" class="icon" data-action="deletePreset" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_DEFAULTS.Manager.delete'}}">
         <i class="fa-solid fa-trash"></i>
       </button>
     </legend>
-    {{#each p.fields as |f|}}
-    <div class="field">
-      <label class="enable">
-        <input type="checkbox" name="presets.{{../p.id}}.fields.{{f.key}}.enabled" {{#if f.enabled}}checked{{/if}}/>
-        <span>{{localize f.label}}</span>
-      </label>
-      {{#if (eq f.type "select")}}
-      <select name="presets.{{../p.id}}.fields.{{f.key}}.value">
-        {{#each f.choices as |c|}}
-        <option value="{{c.value}}" {{#if c.selected}}selected{{/if}}>{{c.label}}</option>
-        {{/each}}
-      </select>
-      {{else}}
-      <input type="checkbox" name="presets.{{../p.id}}.fields.{{f.key}}.value" {{#if f.value}}checked{{/if}}/>
-      {{/if}}
-    </div>
+    {{#each p.sections as |s|}}
+    <details class="section" open>
+      <summary class="section-toggle"><i class="fa-solid fa-chevron-right"></i> {{localize s.label}}</summary>
+      {{#each s.fields as |f|}}
+      <div class="field {{f.type}}">
+        {{#if (eq f.type "boolean")}}
+        <label class="bool">
+          <input type="checkbox" name="presets.{{p.id}}.fields.{{f.key}}.value" {{#if f.value}}checked{{/if}}/>
+          <span>{{localize f.label}}</span>
+        </label>
+        {{else}}
+        <span class="field-label">{{localize f.label}}</span>
+        {{#if (eq f.type "select")}}
+        <select name="presets.{{p.id}}.fields.{{f.key}}.value">
+          {{#each f.choices as |c|}}
+          <option value="{{c.value}}" {{#if c.selected}}selected{{/if}}>{{c.label}}</option>
+          {{/each}}
+        </select>
+        {{else if (eq f.type "number")}}
+        <range-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}"></range-picker>
+        {{else if (eq f.type "color")}}
+        <color-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}"></color-picker>
+        {{/if}}
+        {{/if}}
+      </div>
+      {{/each}}
+    </details>
     {{/each}}
   </fieldset>
-  {{else}}
-  <p class="hint">{{localize "TOKEN_DEFAULTS.Manager.empty"}}</p>
   {{/each}}
+
 </section>
 <button type="button" data-action="createPreset" class="new-preset">
   <i class="fa-solid fa-plus"></i> {{localize "TOKEN_DEFAULTS.Manager.new"}}
 </button>
+</div>

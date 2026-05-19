@@ -1,9 +1,26 @@
-/* Preset manager window */
+/* Manager window: make the body a flex column so .presets can scroll
+   while the bottom "+ New Preset" button stays anchored. */
+.token-defaults.preset-manager .preset-manager-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 0.5em;
+}
+
 .token-defaults.preset-manager .presets {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  margin-bottom: 0.75em;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 0.25em;
+}
+
+.token-defaults.preset-manager .new-preset {
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .token-defaults .preset {
@@ -32,6 +49,39 @@
   line-height: 1;
 }
 
+/* Section sub-panels within a preset */
+.token-defaults .preset .section {
+  margin: 0.25em 0;
+  border-top: 1px solid var(--color-border-light-tertiary, #999);
+  padding-top: 0.25em;
+}
+
+.token-defaults .preset .section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.token-defaults .section-toggle {
+  cursor: pointer;
+  font-weight: 500;
+  list-style: none;
+  user-select: none;
+  padding: 0.2em 0;
+}
+
+.token-defaults .section-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.token-defaults .section-toggle i {
+  margin-right: 0.3em;
+  transition: transform 0.15s;
+}
+
+.token-defaults .section[open] > .section-toggle i {
+  transform: rotate(90deg);
+}
+
 .token-defaults .field {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) 1fr;
@@ -40,19 +90,82 @@
   margin: 0.25em 0;
 }
 
-.token-defaults .field .enable {
+.token-defaults .field .field-label {
+  font-weight: normal;
+}
+
+/* Boolean fields render as a single Foundry-style checkbox with label */
+.token-defaults .field.boolean {
+  grid-template-columns: 1fr;
+}
+
+.token-defaults .field .bool {
   display: flex;
   gap: 0.5em;
   align-items: center;
   margin: 0;
+  cursor: pointer;
 }
 
-.token-defaults .field .enable input[type="checkbox"] {
+.token-defaults .field .bool input[type="checkbox"] {
   flex: 0 0 auto;
 }
 
-.token-defaults .new-preset {
-  width: 100%;
+/* "View Foundry Defaults" disclosure */
+.token-defaults .defaults-panel {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 4px;
+  margin-bottom: 0.5em;
+}
+
+.token-defaults .defaults-toggle {
+  cursor: pointer;
+  padding: 0.4em 0.75em;
+  background: rgba(0, 0, 0, 0.05);
+  list-style: none;
+  font-weight: 500;
+  user-select: none;
+}
+
+.token-defaults .defaults-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.token-defaults .defaults-toggle i {
+  margin-right: 0.4em;
+  transition: transform 0.15s;
+}
+
+.token-defaults .defaults-panel[open] .defaults-toggle i {
+  transform: rotate(90deg);
+}
+
+.token-defaults .defaults-panel[open] .defaults-toggle {
+  border-bottom: 1px solid var(--color-border-light-tertiary, #999);
+}
+
+.token-defaults .defaults-panel .preset.builtin {
+  margin: 0.5em;
+  border-color: transparent;
+}
+
+.token-defaults .preset.builtin {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.token-defaults .preset.builtin legend {
+  align-items: baseline;
+}
+
+.token-defaults .preset.builtin .builtin-name {
+  font-weight: bold;
+  flex: 1;
+}
+
+.token-defaults .preset.builtin .builtin-tag {
+  font-size: 0.85em;
+  font-style: italic;
+  opacity: 0.7;
 }
 
 .token-defaults .hint {
@@ -60,25 +173,4 @@
   opacity: 0.75;
   text-align: center;
   margin: 1em 0;
-}
-
-/* Sidebar dropdown */
-.token-defaults-picker {
-  display: flex;
-  gap: 0.5em;
-  align-items: center;
-  padding: 0.25em 0.5em;
-  border-bottom: 1px solid var(--color-border-light-tertiary, #999);
-  font-size: var(--font-size-12, 12px);
-}
-
-.token-defaults-picker label {
-  white-space: nowrap;
-  flex: 0 0 auto;
-}
-
-.token-defaults-picker select {
-  flex: 1;
-  min-width: 0;
-  height: 24px;
 }
