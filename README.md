@@ -1,4 +1,4 @@
-# Token Defaults
+# Token Presets
 
 Create multiple presets to speed up your actor / token creation.
 
@@ -30,12 +30,12 @@ You can make as many presets as you like.
 2. Paste this link into the box at the bottom:
 
    ```
-   https://raw.githubusercontent.com/DeadPanMatt/token-defaults/main/module.json
+   https://raw.githubusercontent.com/DeadPanMatt/token-presets/main/module.json
    ```
 
 3. Click **Install**.
 4. In your world, go to **Game Settings → Manage Modules**, tick
-   **Token Defaults**, and save.
+   **Token Presets**, and save.
 
 You're ready.
 
@@ -44,7 +44,7 @@ You're ready.
 ## Making your first preset
 
 1. Go to **Game Settings → Configure Settings**.
-2. Find **Token Defaults** in the list and click **Manage Presets**.
+2. Find **Token Presets** in the list and click **Manage Presets**.
 3. Click **+ New Preset** at the bottom.
 4. Give it a name (like *Hostile Monster*) and set the values you want.
 5. Click **Save**.
@@ -146,11 +146,11 @@ You can't edit it, but you can:
 ## Found a bug? Have an idea?
 
 Open an issue at
-[github.com/DeadPanMatt/token-defaults/issues][issues] and let me know
+[github.com/DeadPanMatt/token-presets/issues][issues] and let me know
 what happened. The more detail the better - what you were trying to do,
 what you saw instead, your Foundry version, and your game system (although this shou not really matter).
 
-[issues]: https://github.com/DeadPanMatt/token-defaults/issues
+[issues]: https://github.com/DeadPanMatt/token-presets/issues
 
 ---
 

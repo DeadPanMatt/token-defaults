@@ -2,14 +2,14 @@
 
 Found something broken, or got an idea for an improvement? Great - open
 an issue at
-[github.com/DeadPanMatt/token-defaults/issues][issues] and use the
+[github.com/DeadPanMatt/token-presets/issues][issues] and use the
 template below as a starting point. The more detail you can give, the
 quicker it'll get sorted.
 
 You don't have to fill in every section - just the ones that make sense
 for what you're reporting. Skip the rest.
 
-[issues]: https://github.com/DeadPanMatt/token-defaults/issues
+[issues]: https://github.com/DeadPanMatt/token-presets/issues
 
 ---
 
@@ -51,7 +51,7 @@ most useful thing for getting something fixed.*
 - **Foundry version:** *e.g. V13.345 or V14.331*
 - **Game system:** *e.g. dnd5e 4.0.1 - though for most issues this
   probably won't matter*
-- **Token Defaults version:** *check the module list, e.g. 0.11.1*
+- **Token Presets version:** *check the module list, e.g. 0.11.1*
 - **Other modules enabled:** *especially anything that modifies the
   Actors sidebar or Token Config (libWrapper, Token Mold, etc.)*
 - **Browser / OS:** *if relevant - most issues are platform-independent*

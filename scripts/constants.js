@@ -1,4 +1,4 @@
-export const MODULE_ID = "token-defaults";
+export const MODULE_ID = "token-presets";
 
 export const SETTINGS = {
   PRESETS: "presets",
@@ -14,8 +14,8 @@ export const FLAGS = {
  * Order here determines display order.
  */
 export const SECTIONS = {
-  identity:   { label: "TOKEN_DEFAULTS.Section.identity" },
-  appearance: { label: "TOKEN_DEFAULTS.Section.appearance" }
+  identity:   { label: "TOKEN_PRESETS.Section.identity" },
+  appearance: { label: "TOKEN_PRESETS.Section.appearance" }
 };
 
 // Mirror fields don't map to a single path — they sign-flip whatever
@@ -34,7 +34,7 @@ function mirrorApply(axis) {
 export const FIELD_DEFS = {
   // --- Identity ---
   displayName: {
-    label: "TOKEN_DEFAULTS.Field.displayName",
+    label: "TOKEN_PRESETS.Field.displayName",
     type: "select",
     section: "identity",
     path: "displayName",
@@ -42,7 +42,7 @@ export const FIELD_DEFS = {
     default: 0
   },
   displayBars: {
-    label: "TOKEN_DEFAULTS.Field.displayBars",
+    label: "TOKEN_PRESETS.Field.displayBars",
     type: "select",
     section: "identity",
     path: "displayBars",
@@ -50,7 +50,7 @@ export const FIELD_DEFS = {
     default: 0
   },
   disposition: {
-    label: "TOKEN_DEFAULTS.Field.disposition",
+    label: "TOKEN_PRESETS.Field.disposition",
     type: "select",
     section: "identity",
     path: "disposition",
@@ -58,7 +58,7 @@ export const FIELD_DEFS = {
     default: 0
   },
   actorLink: {
-    label: "TOKEN_DEFAULTS.Field.actorLink",
+    label: "TOKEN_PRESETS.Field.actorLink",
     type: "boolean",
     section: "identity",
     path: "actorLink",
@@ -67,7 +67,7 @@ export const FIELD_DEFS = {
 
   // --- Appearance ---
   scale: {
-    label: "TOKEN_DEFAULTS.Field.Scale",
+    label: "TOKEN_PRESETS.Field.Scale",
     type: "number",
     section: "appearance",
     // Foundry's "scale" input is a UX convenience; the document schema has
@@ -79,14 +79,14 @@ export const FIELD_DEFS = {
     step: 0.05
   },
   tint: {
-    label: "TOKEN_DEFAULTS.Field.tint",
+    label: "TOKEN_PRESETS.Field.tint",
     type: "color",
     section: "appearance",
     path: "texture.tint",
     default: "#ffffff"
   },
   alpha: {
-    label: "TOKEN_DEFAULTS.Field.alpha",
+    label: "TOKEN_PRESETS.Field.alpha",
     type: "number",
     section: "appearance",
     path: "alpha",
@@ -96,7 +96,7 @@ export const FIELD_DEFS = {
     step: 0.05
   },
   rotation: {
-    label: "TOKEN_DEFAULTS.Field.rotation",
+    label: "TOKEN_PRESETS.Field.rotation",
     type: "number",
     section: "appearance",
     path: "rotation",
@@ -108,21 +108,21 @@ export const FIELD_DEFS = {
   // Mirror must follow `scale` in declaration order so the sign flip
   // composes with any preset-driven scale value applied earlier.
   mirrorH: {
-    label: "TOKEN_DEFAULTS.Field.mirrorH",
+    label: "TOKEN_PRESETS.Field.mirrorH",
     type: "boolean",
     section: "appearance",
     apply: mirrorApply("h"),
     default: false
   },
   mirrorV: {
-    label: "TOKEN_DEFAULTS.Field.mirrorV",
+    label: "TOKEN_PRESETS.Field.mirrorV",
     type: "boolean",
     section: "appearance",
     apply: mirrorApply("v"),
     default: false
   },
   lockRotation: {
-    label: "TOKEN_DEFAULTS.Field.lockRotation",
+    label: "TOKEN_PRESETS.Field.lockRotation",
     type: "boolean",
     section: "appearance",
     path: "lockRotation",

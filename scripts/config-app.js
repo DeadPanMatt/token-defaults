@@ -12,11 +12,11 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
-    id: "token-defaults-preset-manager",
+    id: "token-presets-preset-manager",
     tag: "form",
-    classes: ["token-defaults", "preset-manager"],
+    classes: ["token-presets", "preset-manager"],
     window: {
-      title: "TOKEN_DEFAULTS.Manager.title",
+      title: "TOKEN_PRESETS.Manager.title",
       icon: "fa-solid fa-user-gear",
       resizable: true
     },
@@ -73,7 +73,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
         {
           type: "submit",
           icon: "fa-solid fa-save",
-          label: "TOKEN_DEFAULTS.Manager.save"
+          label: "TOKEN_PRESETS.Manager.save"
         }
       ]
     };
@@ -166,7 +166,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async #onCreate(_event, _target) {
     this.#captureFormState();
-    const preset = emptyPreset(game.i18n.localize("TOKEN_DEFAULTS.Manager.newDefaultName"));
+    const preset = emptyPreset(game.i18n.localize("TOKEN_PRESETS.Manager.newDefaultName"));
     this.#presets[preset.id] = preset;
     this.render();
   }
@@ -185,8 +185,8 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
     const preset = this.#presets[id];
     const { DialogV2 } = foundry.applications.api;
     const confirmed = await DialogV2.confirm({
-      window: { title: game.i18n.localize("TOKEN_DEFAULTS.Manager.applyDefaultsConfirmTitle") },
-      content: `<p>${game.i18n.format("TOKEN_DEFAULTS.Manager.applyDefaultsConfirm", { name: preset.name })}</p>`,
+      window: { title: game.i18n.localize("TOKEN_PRESETS.Manager.applyDefaultsConfirmTitle") },
+      content: `<p>${game.i18n.format("TOKEN_PRESETS.Manager.applyDefaultsConfirm", { name: preset.name })}</p>`,
       rejectClose: false
     }).catch(() => false);
     if (!confirmed) return;

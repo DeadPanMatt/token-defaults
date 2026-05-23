@@ -26,9 +26,9 @@ Hooks.once("init", () => {
   });
 
   game.settings.registerMenu(MODULE_ID, "presetManager", {
-    name: "TOKEN_DEFAULTS.Menu.presetManager.name",
-    label: "TOKEN_DEFAULTS.Menu.presetManager.label",
-    hint: "TOKEN_DEFAULTS.Menu.presetManager.hint",
+    name: "TOKEN_PRESETS.Menu.presetManager.name",
+    label: "TOKEN_PRESETS.Menu.presetManager.label",
+    hint: "TOKEN_PRESETS.Menu.presetManager.hint",
     icon: "fa-solid fa-user-gear",
     type: PresetManager,
     restricted: true
@@ -112,7 +112,7 @@ function patchActorCreateDialog() {
 
     const lastUsed = game.settings.get(MODULE_ID, SETTINGS.DEFAULT_PRESET_ID) || "";
     const choice = await pickPreset({
-      promptText: game.i18n.localize("TOKEN_DEFAULTS.Picker.promptNew"),
+      promptText: game.i18n.localize("TOKEN_PRESETS.Picker.promptNew"),
       currentPresetId: lastUsed
     });
 
@@ -131,9 +131,9 @@ function patchActorCreateDialog() {
 /* Context menu actions for existing actors and folders.                    */
 function addActorContextOption(options) {
   if (!Array.isArray(options)) return;
-  if (options.some((o) => o?.name === "TOKEN_DEFAULTS.Context.setPreset")) return;
+  if (options.some((o) => o?.name === "TOKEN_PRESETS.Context.setPreset")) return;
   options.push({
-    name: "TOKEN_DEFAULTS.Context.setPreset",
+    name: "TOKEN_PRESETS.Context.setPreset",
     icon: '<i class="fa-solid fa-user-gear"></i>',
     condition: () => game.user.isGM,
     callback: async (li) => {
@@ -142,7 +142,7 @@ function addActorContextOption(options) {
     }
   });
   options.push({
-    name: "TOKEN_DEFAULTS.Context.pushActor",
+    name: "TOKEN_PRESETS.Context.pushActor",
     icon: '<i class="fa-solid fa-arrows-rotate"></i>',
     condition: (li) => {
       if (!game.user.isGM) return false;
@@ -158,9 +158,9 @@ function addActorContextOption(options) {
 
 function addFolderContextOption(options) {
   if (!Array.isArray(options)) return;
-  if (options.some((o) => o?.name === "TOKEN_DEFAULTS.Context.setFolderPreset")) return;
+  if (options.some((o) => o?.name === "TOKEN_PRESETS.Context.setFolderPreset")) return;
   options.push({
-    name: "TOKEN_DEFAULTS.Context.setFolderPreset",
+    name: "TOKEN_PRESETS.Context.setFolderPreset",
     icon: '<i class="fa-solid fa-user-gear"></i>',
     condition: (li) => {
       if (!game.user.isGM) return false;
@@ -173,7 +173,7 @@ function addFolderContextOption(options) {
     }
   });
   options.push({
-    name: "TOKEN_DEFAULTS.Context.pushFolder",
+    name: "TOKEN_PRESETS.Context.pushFolder",
     icon: '<i class="fa-solid fa-arrows-rotate"></i>',
     condition: (li) => {
       if (!game.user.isGM) return false;
@@ -202,7 +202,7 @@ function resolveFolderFromContext(li) {
 async function setPresetOnActor(actor) {
   const current = actor.getFlag(MODULE_ID, FLAGS.PRESET_ID) ?? "";
   const choice = await pickPreset({
-    promptText: game.i18n.format("TOKEN_DEFAULTS.Picker.promptExisting", { name: actor.name }),
+    promptText: game.i18n.format("TOKEN_PRESETS.Picker.promptExisting", { name: actor.name }),
     currentPresetId: current
   });
   if (choice === undefined || choice === null) return;
@@ -213,12 +213,12 @@ async function setPresetOnActor(actor) {
 async function setPresetOnFolder(folder) {
   const actors = collectFolderActors(folder);
   if (!actors.length) {
-    ui.notifications?.info(game.i18n.localize("TOKEN_DEFAULTS.Folder.empty"));
+    ui.notifications?.info(game.i18n.localize("TOKEN_PRESETS.Folder.empty"));
     return;
   }
 
   const choice = await pickPreset({
-    promptText: game.i18n.format("TOKEN_DEFAULTS.Picker.promptFolder", {
+    promptText: game.i18n.format("TOKEN_PRESETS.Picker.promptFolder", {
       name: folder.name,
       count: actors.length
     }),
@@ -229,15 +229,15 @@ async function setPresetOnFolder(folder) {
   const presets = game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? {};
   const presetName = choice
     ? (presets[choice]?.name ?? choice)
-    : game.i18n.localize("TOKEN_DEFAULTS.Picker.none");
+    : game.i18n.localize("TOKEN_PRESETS.Picker.none");
 
   const { DialogV2 } = foundry.applications.api;
   const confirmed = await DialogV2.confirm({
-    window: { title: game.i18n.localize("TOKEN_DEFAULTS.Folder.confirmTitle") },
-    content: `<p>${escapeHTML(game.i18n.format("TOKEN_DEFAULTS.Folder.confirm", {
+    window: { title: game.i18n.localize("TOKEN_PRESETS.Folder.confirmTitle") },
+    content: `<p>${escapeHTML(game.i18n.format("TOKEN_PRESETS.Folder.confirm", {
       count: actors.length,
       preset: presetName
-    }))}</p><p class="hint">${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Folder.note"))}</p>`,
+    }))}</p><p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.note"))}</p>`,
     rejectClose: false
   }).catch(() => false);
   if (!confirmed) return;
@@ -246,7 +246,7 @@ async function setPresetOnFolder(folder) {
     if (choice) await actor.setFlag(MODULE_ID, FLAGS.PRESET_ID, choice);
     else await actor.unsetFlag(MODULE_ID, FLAGS.PRESET_ID);
   }
-  ui.notifications?.info(game.i18n.format("TOKEN_DEFAULTS.Folder.done", { count: actors.length }));
+  ui.notifications?.info(game.i18n.format("TOKEN_PRESETS.Folder.done", { count: actors.length }));
 }
 
 function collectFolderActors(folder) {
@@ -280,8 +280,8 @@ function addTokenToolbarButton(controls) {
   if (!tokenControl) return;
 
   const tool = {
-    name: "token-defaults-apply-preset",
-    title: "TOKEN_DEFAULTS.Tool.applyToSelection",
+    name: "token-presets-apply-preset",
+    title: "TOKEN_PRESETS.Tool.applyToSelection",
     icon: "fa-solid fa-user-gear",
     button: true,
     visible: !!game.user?.isGM,
@@ -296,49 +296,142 @@ function addTokenToolbarButton(controls) {
 }
 
 async function applyPresetToSelectedTokens() {
-  const selected = canvas.tokens?.controlled ?? [];
-  if (!selected.length) {
-    ui.notifications?.warn(game.i18n.localize("TOKEN_DEFAULTS.Push.noSelection"));
+  const scene = canvas.scene;
+  if (!scene) {
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.MultiPicker.noScene"));
     return;
   }
 
+  const tokens = [...scene.tokens];
+  if (!tokens.length) {
+    ui.notifications?.info(game.i18n.localize("TOKEN_PRESETS.MultiPicker.noTokens"));
+    return;
+  }
+
+  const builtins = Object.values(BUILTIN_PRESETS);
+  const userPresets = Object.values(game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? {});
+  if (!builtins.length && !userPresets.length) {
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.Picker.noPresets"));
+    return;
+  }
+
+  // Pre-select whatever the user already has controlled on the canvas.
+  const preselected = new Set((canvas.tokens?.controlled ?? []).map((t) => t.id));
+
+  // Sort tokens alphabetically by display name for predictable order.
+  const sortedTokens = tokens
+    .map((td) => ({
+      id: td.id,
+      name: td.name || td.actor?.name || game.i18n.localize("TOKEN_PRESETS.MultiPicker.unnamed"),
+      actorName: td.actor?.name
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   const lastUsed = game.settings.get(MODULE_ID, SETTINGS.DEFAULT_PRESET_ID) || "";
-  const choice = await pickPreset({
-    promptText: game.i18n.format("TOKEN_DEFAULTS.Picker.promptSelection", { count: selected.length }),
-    currentPresetId: lastUsed
+  const presetOpt = (p) =>
+    `<option value="${escapeHTML(p.id)}"${p.id === lastUsed ? " selected" : ""}>${escapeHTML(p.name)}</option>`;
+  const presetOptions = [
+    `<option value=""${!lastUsed ? " selected" : ""}>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.none"))}</option>`,
+    builtins.length
+      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.builtinGroup"))}">${builtins.map(presetOpt).join("")}</optgroup>`
+      : "",
+    userPresets.length
+      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.customGroup"))}">${userPresets.map(presetOpt).join("")}</optgroup>`
+      : ""
+  ].join("");
+
+  const tokenOptions = sortedTokens
+    .map((t) => {
+      const label =
+        t.actorName && t.actorName !== t.name ? `${t.name} (${t.actorName})` : t.name;
+      return `<option value="${escapeHTML(t.id)}"${preselected.has(t.id) ? " selected" : ""}>${escapeHTML(label)}</option>`;
+    })
+    .join("");
+
+  const content = `
+    <div class="form-group">
+      <label for="token-presets-multi-preset">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.label"))}</label>
+      <select id="token-presets-multi-preset" name="presetId">${presetOptions}</select>
+    </div>
+    <div class="form-group token-presets-token-list">
+      <label for="token-presets-multi-tokens">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.tokensLabel"))}</label>
+      <select id="token-presets-multi-tokens" name="tokenIds" multiple size="12">${tokenOptions}</select>
+      <p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.hint"))}</p>
+    </div>
+  `;
+
+  const { DialogV2 } = foundry.applications.api;
+  const result = await DialogV2.wait({
+    window: {
+      title: game.i18n.localize("TOKEN_PRESETS.MultiPicker.title"),
+      icon: "fa-solid fa-user-gear"
+    },
+    content,
+    position: { width: 480 },
+    buttons: [
+      {
+        action: "apply",
+        label: game.i18n.localize("TOKEN_PRESETS.Picker.apply"),
+        icon: "fa-solid fa-check",
+        default: true,
+        callback: (_event, button) => {
+          const presetEl = button.form.querySelector("select[name='presetId']");
+          const tokenEl = button.form.querySelector("select[name='tokenIds']");
+          const tokenIds = Array.from(tokenEl?.selectedOptions ?? []).map((o) => o.value);
+          return { presetId: presetEl?.value ?? "", tokenIds };
+        }
+      },
+      {
+        action: "cancel",
+        label: game.i18n.localize("TOKEN_PRESETS.Picker.cancel"),
+        icon: "fa-solid fa-xmark",
+        callback: () => null
+      }
+    ],
+    rejectClose: false
   });
-  if (choice === undefined || choice === null) return; // user cancelled
+
+  if (!result) return;
+  if (!result.tokenIds?.length) {
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.MultiPicker.noTokensSelected"));
+    return;
+  }
+
+  const tokenDocs = result.tokenIds
+    .map((id) => scene.tokens.get(id))
+    .filter((td) => td);
+  if (!tokenDocs.length) return;
 
   // None ("") falls back to the built-in Foundry Default preset.
-  const presetId = choice || BUILTIN_FOUNDRY_DEFAULT_ID;
+  const presetId = result.presetId || BUILTIN_FOUNDRY_DEFAULT_ID;
   const preset = getPresetById(presetId);
   if (!preset) return;
 
-  const total = await pushPresetToTokens(preset, selected.map((t) => t.document), presetId);
-  if (choice) await game.settings.set(MODULE_ID, SETTINGS.DEFAULT_PRESET_ID, choice);
-  ui.notifications?.info(game.i18n.format("TOKEN_DEFAULTS.Push.done", { count: total }));
+  const total = await pushPresetToTokens(preset, tokenDocs, presetId);
+  if (result.presetId) await game.settings.set(MODULE_ID, SETTINGS.DEFAULT_PRESET_ID, result.presetId);
+  ui.notifications?.info(game.i18n.format("TOKEN_PRESETS.Push.done", { count: total }));
 }
 
 async function pushPresetForActor(actor) {
   const presetId = actor.getFlag(MODULE_ID, FLAGS.PRESET_ID);
   if (!presetId) {
-    ui.notifications?.warn(game.i18n.localize("TOKEN_DEFAULTS.Push.noFlag"));
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.Push.noFlag"));
     return;
   }
   const preset = getPresetById(presetId);
   if (!preset) {
-    ui.notifications?.warn(game.i18n.localize("TOKEN_DEFAULTS.Push.presetMissing"));
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.Push.presetMissing"));
     return;
   }
 
   const placements = findPlacedTokensForActor(actor);
   if (!placements.length) {
-    ui.notifications?.info(game.i18n.localize("TOKEN_DEFAULTS.Push.noPlacements"));
+    ui.notifications?.info(game.i18n.localize("TOKEN_PRESETS.Push.noPlacements"));
     return;
   }
 
   const confirmed = await confirmPush(
-    game.i18n.format("TOKEN_DEFAULTS.Push.confirmActor", {
+    game.i18n.format("TOKEN_PRESETS.Push.confirmActor", {
       preset: preset.name,
       count: placements.length,
       actor: actor.name
@@ -347,7 +440,7 @@ async function pushPresetForActor(actor) {
   if (!confirmed) return;
 
   const total = await pushPresetToTokens(preset, placements, presetId);
-  ui.notifications?.info(game.i18n.format("TOKEN_DEFAULTS.Push.done", { count: total }));
+  ui.notifications?.info(game.i18n.format("TOKEN_PRESETS.Push.done", { count: total }));
 }
 
 async function pushPresetForFolder(folder) {
@@ -366,7 +459,7 @@ async function pushPresetForFolder(folder) {
   }
 
   if (!tokensByPreset.size) {
-    ui.notifications?.info(game.i18n.localize("TOKEN_DEFAULTS.Push.folderNoFlags"));
+    ui.notifications?.info(game.i18n.localize("TOKEN_PRESETS.Push.folderNoFlags"));
     return;
   }
 
@@ -376,7 +469,7 @@ async function pushPresetForFolder(folder) {
     .join(", ");
 
   const confirmed = await confirmPush(
-    game.i18n.format("TOKEN_DEFAULTS.Push.confirmFolder", {
+    game.i18n.format("TOKEN_PRESETS.Push.confirmFolder", {
       count: totalCount,
       folder: folder.name,
       summary
@@ -389,7 +482,7 @@ async function pushPresetForFolder(folder) {
     const preset = getPresetById(pid);
     if (preset) total += await pushPresetToTokens(preset, arr, pid);
   }
-  ui.notifications?.info(game.i18n.format("TOKEN_DEFAULTS.Push.done", { count: total }));
+  ui.notifications?.info(game.i18n.format("TOKEN_PRESETS.Push.done", { count: total }));
 }
 
 function findPlacedTokensForActor(actor) {
@@ -441,10 +534,10 @@ async function pushPresetToTokens(preset, tokenDocs, presetId) {
 async function confirmPush(message) {
   const { DialogV2 } = foundry.applications.api;
   return DialogV2.confirm({
-    window: { title: game.i18n.localize("TOKEN_DEFAULTS.Push.confirmTitle") },
+    window: { title: game.i18n.localize("TOKEN_PRESETS.Push.confirmTitle") },
     content:
       `<p>${escapeHTML(message)}</p>` +
-      `<p class="hint">${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Push.note"))}</p>`,
+      `<p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Push.note"))}</p>`,
     rejectClose: false
   }).catch(() => false);
 }
@@ -454,7 +547,7 @@ async function pickPreset({ promptText, currentPresetId = "" }) {
   const builtins = Object.values(BUILTIN_PRESETS);
   const userPresets = Object.values(game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? {});
   if (!builtins.length && !userPresets.length) {
-    ui.notifications?.warn(game.i18n.localize("TOKEN_DEFAULTS.Picker.noPresets"));
+    ui.notifications?.warn(game.i18n.localize("TOKEN_PRESETS.Picker.noPresets"));
     return null;
   }
 
@@ -463,34 +556,34 @@ async function pickPreset({ promptText, currentPresetId = "" }) {
 
   const noneSelected = !currentPresetId ? " selected" : "";
   const optionsHtml = [
-    `<option value=""${noneSelected}>${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Picker.none"))}</option>`,
+    `<option value=""${noneSelected}>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.none"))}</option>`,
     builtins.length
-      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Picker.builtinGroup"))}">${builtins.map(opt).join("")}</optgroup>`
+      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.builtinGroup"))}">${builtins.map(opt).join("")}</optgroup>`
       : "",
     userPresets.length
-      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Picker.customGroup"))}">${userPresets.map(opt).join("")}</optgroup>`
+      ? `<optgroup label="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.customGroup"))}">${userPresets.map(opt).join("")}</optgroup>`
       : ""
   ].join("");
 
   const content = `
     <p>${escapeHTML(promptText)}</p>
     <div class="form-group">
-      <label for="token-defaults-preset-picker">${escapeHTML(game.i18n.localize("TOKEN_DEFAULTS.Picker.label"))}</label>
-      <select id="token-defaults-preset-picker" name="presetId">${optionsHtml}</select>
+      <label for="token-presets-preset-picker">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.label"))}</label>
+      <select id="token-presets-preset-picker" name="presetId">${optionsHtml}</select>
     </div>
   `;
 
   const { DialogV2 } = foundry.applications.api;
   return DialogV2.wait({
     window: {
-      title: game.i18n.localize("TOKEN_DEFAULTS.Picker.title"),
+      title: game.i18n.localize("TOKEN_PRESETS.Picker.title"),
       icon: "fa-solid fa-user-gear"
     },
     content,
     buttons: [
       {
         action: "apply",
-        label: game.i18n.localize("TOKEN_DEFAULTS.Picker.apply"),
+        label: game.i18n.localize("TOKEN_PRESETS.Picker.apply"),
         icon: "fa-solid fa-check",
         default: true,
         callback: (_event, button) => {
@@ -501,7 +594,7 @@ async function pickPreset({ promptText, currentPresetId = "" }) {
       },
       {
         action: "cancel",
-        label: game.i18n.localize("TOKEN_DEFAULTS.Picker.cancel"),
+        label: game.i18n.localize("TOKEN_PRESETS.Picker.cancel"),
         icon: "fa-solid fa-xmark",
         callback: () => null
       }

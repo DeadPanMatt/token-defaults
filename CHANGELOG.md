@@ -1,6 +1,6 @@
 # Changelog
 
-What's new in **Token Defaults** - a Foundry VTT module that lets you save
+What's new in **Token Presets** - a Foundry VTT module that lets you save
 named token presets (display name, disposition, scale, tint, and more) and
 apply them automatically to new actors, in bulk to existing ones, or
 directly to tokens already on the canvas.

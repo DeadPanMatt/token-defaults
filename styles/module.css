@@ -1,6 +1,6 @@
 /* Manager window: make the body a flex column so .presets can scroll
    while the bottom "+ New Preset" button stays anchored. */
-.token-defaults.preset-manager .preset-manager-body {
+.token-presets.preset-manager .preset-manager-body {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -8,7 +8,7 @@
   gap: 0.5em;
 }
 
-.token-defaults.preset-manager .presets {
+.token-presets.preset-manager .presets {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
@@ -18,30 +18,30 @@
   padding-right: 0.25em;
 }
 
-.token-defaults.preset-manager .new-preset {
+.token-presets.preset-manager .new-preset {
   flex-shrink: 0;
   width: 100%;
 }
 
-.token-defaults .preset {
+.token-presets .preset {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 4px;
   padding: 0.5em 0.75em;
 }
 
-.token-defaults .preset legend {
+.token-presets .preset legend {
   display: flex;
   gap: 0.5em;
   align-items: center;
   width: 100%;
 }
 
-.token-defaults .preset legend input[type="text"] {
+.token-presets .preset legend input[type="text"] {
   flex: 1;
   min-width: 0;
 }
 
-.token-defaults .preset legend button.icon {
+.token-presets .preset legend button.icon {
   flex: 0 0 auto;
   width: 28px;
   height: 28px;
@@ -50,18 +50,18 @@
 }
 
 /* Section sub-panels within a preset */
-.token-defaults .preset .section {
+.token-presets .preset .section {
   margin: 0.25em 0;
   border-top: 1px solid var(--color-border-light-tertiary, #999);
   padding-top: 0.25em;
 }
 
-.token-defaults .preset .section:first-of-type {
+.token-presets .preset .section:first-of-type {
   border-top: none;
   padding-top: 0;
 }
 
-.token-defaults .section-toggle {
+.token-presets .section-toggle {
   cursor: pointer;
   font-weight: 500;
   list-style: none;
@@ -69,20 +69,20 @@
   padding: 0.2em 0;
 }
 
-.token-defaults .section-toggle::-webkit-details-marker {
+.token-presets .section-toggle::-webkit-details-marker {
   display: none;
 }
 
-.token-defaults .section-toggle i {
+.token-presets .section-toggle i {
   margin-right: 0.3em;
   transition: transform 0.15s;
 }
 
-.token-defaults .section[open] > .section-toggle i {
+.token-presets .section[open] > .section-toggle i {
   transform: rotate(90deg);
 }
 
-.token-defaults .field {
+.token-presets .field {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) 1fr;
   gap: 0.5em;
@@ -90,16 +90,16 @@
   margin: 0.25em 0;
 }
 
-.token-defaults .field .field-label {
+.token-presets .field .field-label {
   font-weight: normal;
 }
 
 /* Boolean fields render as a single Foundry-style checkbox with label */
-.token-defaults .field.boolean {
+.token-presets .field.boolean {
   grid-template-columns: 1fr;
 }
 
-.token-defaults .field .bool {
+.token-presets .field .bool {
   display: flex;
   gap: 0.5em;
   align-items: center;
@@ -107,18 +107,18 @@
   cursor: pointer;
 }
 
-.token-defaults .field .bool input[type="checkbox"] {
+.token-presets .field .bool input[type="checkbox"] {
   flex: 0 0 auto;
 }
 
 /* "View Foundry Defaults" disclosure */
-.token-defaults .defaults-panel {
+.token-presets .defaults-panel {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 4px;
   margin-bottom: 0.5em;
 }
 
-.token-defaults .defaults-toggle {
+.token-presets .defaults-toggle {
   cursor: pointer;
   padding: 0.4em 0.75em;
   background: rgba(0, 0, 0, 0.05);
@@ -127,50 +127,64 @@
   user-select: none;
 }
 
-.token-defaults .defaults-toggle::-webkit-details-marker {
+.token-presets .defaults-toggle::-webkit-details-marker {
   display: none;
 }
 
-.token-defaults .defaults-toggle i {
+.token-presets .defaults-toggle i {
   margin-right: 0.4em;
   transition: transform 0.15s;
 }
 
-.token-defaults .defaults-panel[open] .defaults-toggle i {
+.token-presets .defaults-panel[open] .defaults-toggle i {
   transform: rotate(90deg);
 }
 
-.token-defaults .defaults-panel[open] .defaults-toggle {
+.token-presets .defaults-panel[open] .defaults-toggle {
   border-bottom: 1px solid var(--color-border-light-tertiary, #999);
 }
 
-.token-defaults .defaults-panel .preset.builtin {
+.token-presets .defaults-panel .preset.builtin {
   margin: 0.5em;
   border-color: transparent;
 }
 
-.token-defaults .preset.builtin {
+.token-presets .preset.builtin {
   background: rgba(0, 0, 0, 0.04);
 }
 
-.token-defaults .preset.builtin legend {
+.token-presets .preset.builtin legend {
   align-items: baseline;
 }
 
-.token-defaults .preset.builtin .builtin-name {
+.token-presets .preset.builtin .builtin-name {
   font-weight: bold;
   flex: 1;
 }
 
-.token-defaults .preset.builtin .builtin-tag {
+.token-presets .preset.builtin .builtin-tag {
   font-size: 0.85em;
   font-style: italic;
   opacity: 0.7;
 }
 
-.token-defaults .hint {
+.token-presets .hint {
   font-style: italic;
   opacity: 0.75;
   text-align: center;
   margin: 1em 0;
+}
+
+/* Multi-token picker dialog (toolbar "Apply Token Preset…") */
+.token-presets-token-list select[multiple] {
+  width: 100%;
+  min-height: 220px;
+  font-family: inherit;
+}
+
+.token-presets-token-list .hint {
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin: 0.4em 0 0 0;
+  text-align: left;
 }

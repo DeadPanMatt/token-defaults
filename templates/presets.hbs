@@ -5,13 +5,13 @@
   <details class="defaults-panel">
     <summary class="defaults-toggle">
       <i class="fa-solid fa-chevron-right"></i>
-      <span>{{localize "TOKEN_DEFAULTS.Manager.viewDefaults"}}</span>
+      <span>{{localize "TOKEN_PRESETS.Manager.viewDefaults"}}</span>
     </summary>
     {{#each builtins as |p|}}
     <fieldset class="preset builtin" data-preset-id="{{p.id}}">
       <legend>
         <span class="builtin-name">{{p.name}}</span>
-        <span class="builtin-tag">{{localize "TOKEN_DEFAULTS.Manager.builtinTag"}}</span>
+        <span class="builtin-tag">{{localize "TOKEN_PRESETS.Manager.builtinTag"}}</span>
       </legend>
       {{#each p.sections as |s|}}
       <details class="section" open>
@@ -50,10 +50,10 @@
   <fieldset class="preset" data-preset-id="{{p.id}}">
     <legend>
       <input type="text" name="presets.{{p.id}}.name" value="{{p.name}}" placeholder="Preset name"/>
-      <button type="button" class="icon" data-action="applyDefaults" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_DEFAULTS.Manager.applyDefaults'}}">
+      <button type="button" class="icon" data-action="applyDefaults" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_PRESETS.Manager.applyDefaults'}}">
         <i class="fa-solid fa-rotate-left"></i>
       </button>
-      <button type="button" class="icon" data-action="deletePreset" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_DEFAULTS.Manager.delete'}}">
+      <button type="button" class="icon" data-action="deletePreset" data-preset-id="{{p.id}}" title="{{localize 'TOKEN_PRESETS.Manager.delete'}}">
         <i class="fa-solid fa-trash"></i>
       </button>
     </legend>
@@ -90,6 +90,6 @@
 
 </section>
 <button type="button" data-action="createPreset" class="new-preset">
-  <i class="fa-solid fa-plus"></i> {{localize "TOKEN_DEFAULTS.Manager.new"}}
+  <i class="fa-solid fa-plus"></i> {{localize "TOKEN_PRESETS.Manager.new"}}
 </button>
 </div>
