@@ -269,3 +269,246 @@
   width: 1.2em;
   text-align: center;
 }
+
+/* Constrain top-of-dialog form rows so long preset names don't push the dialog
+   width past the window. Targets just the two filter dialogs. */
+.application.token-presets-multi-picker-dialog .window-content > form .form-group,
+.application.token-presets-tag-actors-dialog .window-content > form .form-group {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.application.token-presets-multi-picker-dialog .window-content select,
+.application.token-presets-multi-picker-dialog .window-content input,
+.application.token-presets-tag-actors-dialog .window-content select,
+.application.token-presets-tag-actors-dialog .window-content input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Explorer-style two-pane layout: folder tree (left) + actor/token list (right) */
+.token-presets-explorer {
+  display: flex;
+  gap: 0.75em;
+  align-items: stretch;
+  margin: 0.5em 0;
+  min-width: 0;
+}
+
+.token-presets-explorer .token-presets-folder-tree-container {
+  flex: 0 1 240px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.token-presets-explorer .token-presets-folder-tree-container .folder-tree {
+  flex: 1;
+  max-height: none;
+  min-height: 300px;
+}
+
+.token-presets-explorer .explorer-list-pane {
+  flex: 1 1 auto;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  margin: 0;
+}
+
+.token-presets-explorer .explorer-list-pane label {
+  margin: 0;
+}
+
+.token-presets-explorer .explorer-list-pane select[multiple] {
+  flex: 1;
+  min-height: 300px;
+}
+
+.token-presets-explorer .explorer-list-pane .token-presets-search {
+  width: 100%;
+  margin: 0;
+  padding: 0.25em 0.5em;
+  font-family: inherit;
+  font-size: 0.95em;
+}
+
+/* Draggable splitter between tree and list panes */
+.token-presets-explorer .explorer-splitter {
+  flex: 0 0 6px;
+  cursor: col-resize;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  align-self: stretch;
+}
+
+.token-presets-explorer .explorer-splitter:hover,
+.token-presets-explorer .explorer-splitter.dragging {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.token-presets-explorer .explorer-list-pane .hint {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin: 0.4em 0 0;
+  text-align: left;
+  flex: 0 0 auto;
+}
+
+/* Folder tree (Actor folders, used in both filter dialogs) */
+.token-presets-folder-tree-container {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 4px;
+  padding: 0.4em;
+}
+
+.token-presets-folder-tree-container .folder-tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3em;
+}
+
+.token-presets-folder-tree-container .folder-tree-header label {
+  margin: 0;
+}
+
+.application.token-presets-multi-picker-dialog .new-folder-button,
+.application.token-presets-tag-actors-dialog .new-folder-button {
+  flex: 0 0 auto;
+  font-size: 0.85em;
+  color: #bea38f !important;
+  background: #0c0601 !important;
+  background-color: #0c0601 !important;
+  border-color: #333 !important;
+  padding: 0.15em 0.5em;
+  width: auto;
+}
+
+.application.token-presets-multi-picker-dialog .new-folder-button i,
+.application.token-presets-tag-actors-dialog .new-folder-button i {
+  color: inherit !important;
+}
+
+.application.token-presets-multi-picker-dialog .new-folder-button:hover,
+.application.token-presets-tag-actors-dialog .new-folder-button:hover {
+  color: #ffffff !important;
+  background: #2a1810 !important;
+  background-color: #2a1810 !important;
+}
+
+.token-presets-folder-tree-container .folder-tree {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-light-tertiary, #aaa);
+  border-radius: 3px;
+  padding: 0.2em;
+}
+
+.token-presets-folder-tree-container .folder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.15em;
+  border-radius: 3px;
+}
+
+.token-presets-folder-tree-container .folder-row:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.token-presets-folder-tree-container .folder-row.selected {
+  background: rgba(70, 130, 200, 0.2);
+}
+
+.token-presets-folder-tree-container .folder-toggle,
+.token-presets-folder-tree-container .folder-toggle-spacer {
+  flex: 0 0 auto;
+  width: 1.4em;
+  height: 1.4em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-presets-folder-tree-container .folder-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.55;
+  padding: 0;
+}
+
+.token-presets-folder-tree-container .folder-toggle:hover {
+  opacity: 0.9;
+}
+
+.token-presets-folder-tree-container .folder-toggle i {
+  transition: transform 0.15s;
+  font-size: 0.85em;
+}
+
+.token-presets-folder-tree-container .folder-toggle.expanded i {
+  transform: rotate(90deg);
+}
+
+.token-presets-folder-tree-container .folder-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.35em;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  width: auto;
+}
+
+.token-presets-folder-tree-container .folder-name i {
+  flex: 0 0 auto;
+  opacity: 0.75;
+}
+
+/* Right-click context menu over a folder row */
+.token-presets-folder-ctxmenu {
+  position: fixed;
+  z-index: 10000;
+  background: var(--color-bg, #f0f0e0);
+  border: 1px solid var(--color-border-dark, #444);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  padding: 0.25em;
+  min-width: 160px;
+}
+
+.token-presets-folder-ctxmenu button {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border-radius: 3px;
+}
+
+.token-presets-folder-ctxmenu button:hover {
+  background: rgba(70, 130, 200, 0.18);
+}

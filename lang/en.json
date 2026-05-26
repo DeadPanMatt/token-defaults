@@ -23,7 +23,7 @@
   "TOKEN_PRESETS.Picker.promptFolder": "Choose a token preset to apply to {count} actor(s) in \"{name}\".",
   "TOKEN_PRESETS.MultiPicker.title": "Apply Token Preset",
   "TOKEN_PRESETS.MultiPicker.tokensLabel": "Tokens on this scene",
-  "TOKEN_PRESETS.MultiPicker.hint": "Ctrl/Cmd-click to toggle individual tokens, Shift-click for a range, Ctrl+A selects all.",
+  "TOKEN_PRESETS.MultiPicker.hint": "Ctrl-click or Shift-click for multi-select. Ctrl+A selects all.",
   "TOKEN_PRESETS.MultiPicker.noScene": "No active scene.",
   "TOKEN_PRESETS.MultiPicker.noTokens": "There are no tokens on this scene to apply a preset to.",
   "TOKEN_PRESETS.MultiPicker.noTokensSelected": "Select one or more tokens in the dialog before applying.",
@@ -52,7 +52,7 @@
 
   "TOKEN_PRESETS.TagActors.title": "Tag Actors with a Preset",
   "TOKEN_PRESETS.TagActors.actorsLabel": "Actors (current tag shown after the name)",
-  "TOKEN_PRESETS.TagActors.hint": "Ctrl/Cmd-click to toggle, Shift-click for a range, Ctrl+A selects all.",
+  "TOKEN_PRESETS.TagActors.hint": "Ctrl-click or Shift-click for multi-select. Ctrl+A selects all.",
   "TOKEN_PRESETS.TagActors.noActors": "No actors in this world.",
   "TOKEN_PRESETS.TagActors.noActorsSelected": "Select one or more actors before applying.",
   "TOKEN_PRESETS.TagActors.done": "Tagged {count} actor(s) with preset \"{preset}\".",
@@ -60,6 +60,9 @@
   "TOKEN_PRESETS.Folder.filterLabel": "Folder",
   "TOKEN_PRESETS.Folder.all": "All folders",
   "TOKEN_PRESETS.Folder.uncategorized": "(Uncategorized)",
+  "TOKEN_PRESETS.Folder.newFolder": "New Folder",
+  "TOKEN_PRESETS.Folder.newFolderHere": "New Folder here",
+  "TOKEN_PRESETS.Search.placeholder": "Search by name…",
 
   "TOKEN_PRESETS.Push.confirmTitle": "Apply Preset to Placed Tokens",
   "TOKEN_PRESETS.Push.confirmActor": "Apply preset \"{preset}\" to {count} placed token(s) of \"{actor}\"?",

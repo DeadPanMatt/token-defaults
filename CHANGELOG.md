@@ -7,6 +7,73 @@ directly to tokens already on the canvas.
 
 ---
 
+## 0.13.5 - Fix: hint text in the filter dialogs overflowing
+
+The little grey hint paragraph under the actor/token list ("Ctrl-click
+or Shift-click…") wasn't wrapping correctly and could push off the
+right side of the dialog. It now wraps cleanly inside its pane, and
+the hint text itself has been shortened to be a bit easier to read at
+a glance.
+
+---
+
+## 0.13.4 - Right-click to create folders, plus an overflow fix
+
+- **Right-click any folder row** in the tree to get a small "New Folder
+  here" pop-up. Clicking it creates a sub-folder under the one you
+  right-clicked, via Foundry's standard folder dialog.
+- **Fix:** the preset drop-down at the top of the filter dialogs could
+  overflow the dialog's width when preset names were long, pushing text
+  out of view. The form rows are now properly constrained to the dialog
+  width.
+
+---
+
+## 0.13.3 - Resizable dialog, draggable splitter, search box
+
+Three quality-of-life additions to the filter dialogs:
+
+- **The dialog is now resizable.** Drag the bottom-right corner to make
+  it bigger if long actor or token names are being cut off.
+- **A draggable splitter** sits between the folder tree and the list -
+  click and drag it left/right to give either pane more room.
+- **A search box** above the list filters by name as you type. Combines
+  with the folder filter, so you can pick a folder and then narrow
+  further by typing part of a name.
+
+---
+
+## 0.13.2 - Explorer-style layout for the filter dialogs
+
+The "Apply Preset to Canvas Tokens" and "Tag Actors with a Preset"
+dialogs are now laid out like a small Windows Explorer window: the
+folder tree sits on the left, the actor / token list takes the rest of
+the width on the right. Picking a folder filters the right pane.
+
+Scales much better when you have a deep folder hierarchy - you can see
+both the tree and the list contents at the same time without scrolling
+back and forth. Dialog width bumped to 720px to fit comfortably.
+
+---
+
+## 0.13.1 - Folder filter is now a proper tree
+
+The folder filter in both "Apply Preset to Canvas Tokens" and "Tag
+Actors with a Preset" has been replaced with a small tree view, the way
+Foundry's own Actors sidebar works:
+
+- Each folder has its own chevron - click to expand or collapse.
+- Click a folder name to filter the list to that folder (and its
+  sub-folders).
+- A **+ New Folder** button at the top of the tree creates a new actor
+  folder via Foundry's standard folder dialog. If a folder is selected
+  when you click it, the new folder is created inside that one;
+  otherwise it goes at the root.
+- The tree refreshes automatically when folders are created, renamed,
+  or deleted - whether from the dialog or from the sidebar.
+
+---
+
 ## 0.13.0 - Landing window and folder filters
 
 The user-gear button in Token Controls now opens a small **Token

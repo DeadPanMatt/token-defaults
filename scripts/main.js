@@ -353,41 +353,59 @@ async function applyPresetToSelectedTokens() {
       <label for="token-presets-multi-preset">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.label"))}</label>
       <select id="token-presets-multi-preset" name="presetId">${presetOptions}</select>
     </div>
-    <div class="form-group">
-      <label for="token-presets-multi-folder">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.filterLabel"))}</label>
-      <select id="token-presets-multi-folder" name="folderId">${renderFolderFilterOptions()}</select>
-    </div>
-    <div class="form-group token-presets-token-list">
-      <label for="token-presets-multi-tokens">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.tokensLabel"))}</label>
-      <select id="token-presets-multi-tokens" name="tokenIds" multiple size="12">${tokenOptions}</select>
-      <p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.hint"))}</p>
+    <div class="token-presets-explorer">
+      ${renderFolderPickerBlock()}
+      <div class="explorer-splitter" aria-hidden="true"></div>
+      <div class="form-group token-presets-token-list explorer-list-pane">
+        <label for="token-presets-multi-tokens">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.tokensLabel"))}</label>
+        <input type="search" class="token-presets-search" placeholder="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Search.placeholder"))}"/>
+        <select id="token-presets-multi-tokens" name="tokenIds" multiple size="14">${tokenOptions}</select>
+        <p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.MultiPicker.hint"))}</p>
+      </div>
     </div>
   `;
 
   const dialogClass = "token-presets-multi-picker-dialog";
+  let teardownTree = () => {};
+  let teardownSplitter = () => {};
   const renderHookId = Hooks.on("renderDialogV2", (app) => {
     if (!app.options.classes?.includes(dialogClass)) return;
     Hooks.off("renderDialogV2", renderHookId);
     const root = app.element;
-    const folderSel = root.querySelector("select[name='folderId']");
     const tokenSel = root.querySelector("select[name='tokenIds']");
-    if (!folderSel || !tokenSel) return;
-    const filter = () => {
-      const allowed = actorIdsInFolderFilter(folderSel.value);
-      applyFolderFilterToList(tokenSel, allowed, (opt) => opt.dataset.actorId || null);
+    const searchEl = root.querySelector("input.token-presets-search");
+    const treeContainer = root.querySelector(".token-presets-folder-tree-container");
+    const splitterEl = root.querySelector(".explorer-splitter");
+    if (!tokenSel) return;
+
+    let folderId = "";
+    let searchTerm = "";
+    const reapply = () => {
+      const allowed = actorIdsInFolderFilter(folderId);
+      applyCombinedFilter(tokenSel, allowed, searchTerm, (opt) => opt.dataset.actorId || null);
     };
-    folderSel.addEventListener("change", filter);
+
+    teardownTree = setupFolderTreeHandlers(root, (newFolderId) => {
+      folderId = newFolderId;
+      reapply();
+    });
+    searchEl?.addEventListener("input", () => {
+      searchTerm = searchEl.value;
+      reapply();
+    });
+    teardownSplitter = setupSplitter(treeContainer, splitterEl);
   });
 
   const { DialogV2 } = foundry.applications.api;
   const result = await DialogV2.wait({
     window: {
       title: game.i18n.localize("TOKEN_PRESETS.MultiPicker.title"),
-      icon: "fa-solid fa-user-gear"
+      icon: "fa-solid fa-user-gear",
+      resizable: true
     },
     classes: [dialogClass],
     content,
-    position: { width: 480 },
+    position: { width: 720 },
     buttons: [
       {
         action: "apply",
@@ -411,6 +429,8 @@ async function applyPresetToSelectedTokens() {
     rejectClose: false
   });
   Hooks.off("renderDialogV2", renderHookId);
+  teardownTree();
+  teardownSplitter();
 
   if (!result) return;
   if (!result.tokenIds?.length) {
@@ -532,21 +552,173 @@ function collectDescendantFolderIds(folderId) {
 }
 
 /**
- * Build the option HTML for an Actor-folder picker.
- * - Empty value = all folders.
- * - "__uncategorized__" = actors with no folder.
- * - Folder ids = that folder and any descendant.
+ * Render an Actor-folder tree as HTML for embedding into a dialog.
+ * Behaves like a small file-explorer pane: each folder has its own chevron
+ * for expanding/collapsing, clicking the name selects the folder for filtering.
+ * The synthetic rows "" (all folders) and "__uncategorized__" are always shown.
  */
-function renderFolderFilterOptions() {
-  const tree = buildActorFolderTree();
-  const indent = (depth) => "   ".repeat(depth);
+function renderFolderTreeHTML(selectedId, expandedIds) {
+  const folders = [...game.folders].filter((f) => f.type === "Actor");
+  const byParent = new Map();
+  for (const f of folders) {
+    const parentId = f.folder?.id ?? null;
+    if (!byParent.has(parentId)) byParent.set(parentId, []);
+    byParent.get(parentId).push(f);
+  }
+  for (const arr of byParent.values()) {
+    arr.sort((a, b) => (a.sort - b.sort) || a.name.localeCompare(b.name));
+  }
+
+  const row = ({ id, name, depth, hasChildren, icon }) => {
+    const isExpanded = expandedIds.has(id);
+    const isSelected = id === selectedId;
+    const toggle = hasChildren
+      ? `<button type="button" class="folder-toggle${isExpanded ? " expanded" : ""}" data-action="toggleFolder" data-folder-id="${escapeHTML(id)}" aria-label="toggle"><i class="fa-solid fa-chevron-right"></i></button>`
+      : `<span class="folder-toggle-spacer"></span>`;
+    return `<div class="folder-row${isSelected ? " selected" : ""}" data-folder-id="${escapeHTML(id)}" style="padding-left:${depth * 1.1}em">${toggle}<button type="button" class="folder-name" data-action="selectFolder" data-folder-id="${escapeHTML(id)}"><i class="fa-solid ${icon}"></i><span>${escapeHTML(name)}</span></button></div>`;
+  };
+
+  const walk = (parentId, depth) => {
+    let html = "";
+    for (const f of byParent.get(parentId) ?? []) {
+      const kids = byParent.get(f.id) ?? [];
+      html += row({ id: f.id, name: f.name, depth, hasChildren: kids.length > 0, icon: "fa-folder" });
+      if (expandedIds.has(f.id) && kids.length) html += walk(f.id, depth + 1);
+    }
+    return html;
+  };
+
   return [
-    `<option value="" selected>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.all"))}</option>`,
-    `<option value="__uncategorized__">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.uncategorized"))}</option>`,
-    ...tree.map(
-      (f) => `<option value="${escapeHTML(f.id)}">${indent(f.depth)}${escapeHTML(f.name)}</option>`
-    )
+    row({ id: "", name: game.i18n.localize("TOKEN_PRESETS.Folder.all"), depth: 0, hasChildren: false, icon: "fa-bars" }),
+    row({ id: "__uncategorized__", name: game.i18n.localize("TOKEN_PRESETS.Folder.uncategorized"), depth: 0, hasChildren: false, icon: "fa-circle-question" }),
+    walk(null, 0)
   ].join("");
+}
+
+/** Tree + new-folder button block for embedding into a dialog's content. */
+function renderFolderPickerBlock() {
+  return `
+    <div class="form-group token-presets-folder-tree-container">
+      <div class="folder-tree-header">
+        <label>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.filterLabel"))}</label>
+        <button type="button" class="new-folder-button" data-action="newFolder">
+          <i class="fa-solid fa-folder-plus"></i> ${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.newFolder"))}
+        </button>
+      </div>
+      <div class="folder-tree">${renderFolderTreeHTML("", new Set())}</div>
+      <input type="hidden" name="folderId" value=""/>
+    </div>
+  `;
+}
+
+/**
+ * Wire up event handlers for an embedded folder tree. Returns a teardown
+ * function the caller must invoke after the dialog closes.
+ */
+function setupFolderTreeHandlers(rootEl, onSelectFolder) {
+  const container = rootEl.querySelector(".token-presets-folder-tree-container");
+  if (!container) return () => {};
+  const state = { selectedId: "", expandedIds: new Set() };
+  const hiddenInput = container.querySelector("input[name='folderId']");
+  const treeEl = container.querySelector(".folder-tree");
+  const rerender = () => { treeEl.innerHTML = renderFolderTreeHTML(state.selectedId, state.expandedIds); };
+
+  const onClick = async (event) => {
+    const target = event.target.closest("[data-action]");
+    if (!target || !container.contains(target)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const action = target.dataset.action;
+    const folderId = target.dataset.folderId ?? "";
+
+    if (action === "toggleFolder") {
+      if (state.expandedIds.has(folderId)) state.expandedIds.delete(folderId);
+      else state.expandedIds.add(folderId);
+      rerender();
+    } else if (action === "selectFolder") {
+      state.selectedId = folderId;
+      if (hiddenInput) hiddenInput.value = folderId;
+      rerender();
+      onSelectFolder(folderId);
+    } else if (action === "newFolder") {
+      const parentId = state.selectedId && state.selectedId !== "__uncategorized__" ? state.selectedId : null;
+      try {
+        await Folder.implementation.createDialog({ type: "Actor", folder: parentId });
+        if (parentId) state.expandedIds.add(parentId);
+      } catch (err) {
+        console.error(`${MODULE_ID} | folder createDialog failed`, err);
+      }
+    }
+  };
+
+  container.addEventListener("click", onClick);
+
+  // Right-click anywhere on a folder row to open a small "New Folder here" menu.
+  let openMenu = null;
+  const closeMenu = () => {
+    if (openMenu) {
+      openMenu.remove();
+      openMenu = null;
+    }
+  };
+  const onContextMenu = (event) => {
+    const row = event.target.closest(".folder-row");
+    if (!row || !container.contains(row)) return;
+    event.preventDefault();
+    closeMenu();
+    const rowFolderId = row.dataset.folderId ?? "";
+    const parentId = rowFolderId && rowFolderId !== "__uncategorized__" ? rowFolderId : null;
+
+    const menu = document.createElement("div");
+    menu.className = "token-presets-folder-ctxmenu";
+    menu.style.left = `${event.clientX}px`;
+    menu.style.top = `${event.clientY}px`;
+    menu.innerHTML = `
+      <button type="button" data-ctx-action="newFolderHere">
+        <i class="fa-solid fa-folder-plus"></i>
+        <span>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.newFolderHere"))}</span>
+      </button>
+    `;
+    document.body.appendChild(menu);
+    openMenu = menu;
+
+    menu.querySelector("[data-ctx-action='newFolderHere']").addEventListener("click", async () => {
+      closeMenu();
+      try {
+        await Folder.implementation.createDialog({ type: "Actor", folder: parentId });
+        if (parentId) state.expandedIds.add(parentId);
+      } catch (err) {
+        console.error(`${MODULE_ID} | folder createDialog failed`, err);
+      }
+    });
+
+    // Dismiss on any outside click. Defer attaching so the originating right-click
+    // doesn't immediately close the menu we just opened.
+    setTimeout(() => {
+      const outside = (ev) => {
+        if (!menu.contains(ev.target)) {
+          closeMenu();
+          document.removeEventListener("mousedown", outside, true);
+        }
+      };
+      document.addEventListener("mousedown", outside, true);
+    }, 0);
+  };
+  container.addEventListener("contextmenu", onContextMenu);
+
+  const onFolderChange = () => rerender();
+  Hooks.on("createFolder", onFolderChange);
+  Hooks.on("updateFolder", onFolderChange);
+  Hooks.on("deleteFolder", onFolderChange);
+
+  return () => {
+    container.removeEventListener("click", onClick);
+    container.removeEventListener("contextmenu", onContextMenu);
+    closeMenu();
+    Hooks.off("createFolder", onFolderChange);
+    Hooks.off("updateFolder", onFolderChange);
+    Hooks.off("deleteFolder", onFolderChange);
+  };
 }
 
 /** Which actor IDs match a folder-filter selection? null means "no filter". */
@@ -570,6 +742,65 @@ function applyFolderFilterToList(listEl, allowedActorIds, getActorIdForOption) {
     option.disabled = !allowed;
     if (!allowed) option.selected = false;
   }
+}
+
+/** Combined folder + name-search filter. Both must match for an option to show. */
+function applyCombinedFilter(listEl, allowedActorIds, searchTerm, getActorIdForOption) {
+  const needle = (searchTerm || "").toLowerCase().trim();
+  for (const option of listEl.options) {
+    const actorId = getActorIdForOption(option);
+    const folderOk = !allowedActorIds || (actorId && allowedActorIds.has(actorId));
+    const searchOk = !needle || option.textContent.toLowerCase().includes(needle);
+    const visible = folderOk && searchOk;
+    option.hidden = !visible;
+    option.disabled = !visible;
+    if (!visible) option.selected = false;
+  }
+}
+
+/**
+ * Make a vertical splitter between two flex children draggable.
+ * `treeContainer` is the left child whose width we change.
+ * Returns a teardown function for cleanup on dialog close.
+ */
+function setupSplitter(treeContainer, splitterEl) {
+  if (!treeContainer || !splitterEl) return () => {};
+  let dragging = false;
+  let startX = 0;
+  let startWidth = 0;
+
+  const onDown = (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startWidth = treeContainer.offsetWidth;
+    splitterEl.classList.add("dragging");
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const newWidth = Math.max(140, Math.min(560, startWidth + dx));
+    treeContainer.style.flex = `0 0 ${newWidth}px`;
+  };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    splitterEl.classList.remove("dragging");
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  };
+
+  splitterEl.addEventListener("mousedown", onDown);
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseup", onUp);
+
+  return () => {
+    splitterEl.removeEventListener("mousedown", onDown);
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("mouseup", onUp);
+  };
 }
 
 /* ------------------------------------------------------------------------ */
@@ -617,41 +848,59 @@ async function openTagActorsDialog() {
       <label for="token-presets-tag-preset">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Picker.label"))}</label>
       <select id="token-presets-tag-preset" name="presetId">${presetOptions}</select>
     </div>
-    <div class="form-group">
-      <label for="token-presets-tag-folder">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Folder.filterLabel"))}</label>
-      <select id="token-presets-tag-folder" name="folderId">${renderFolderFilterOptions()}</select>
-    </div>
-    <div class="form-group token-presets-actor-list">
-      <label for="token-presets-tag-actors">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.TagActors.actorsLabel"))}</label>
-      <select id="token-presets-tag-actors" name="actorIds" multiple size="14">${actorOptions}</select>
-      <p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.TagActors.hint"))}</p>
+    <div class="token-presets-explorer">
+      ${renderFolderPickerBlock()}
+      <div class="explorer-splitter" aria-hidden="true"></div>
+      <div class="form-group token-presets-actor-list explorer-list-pane">
+        <label for="token-presets-tag-actors">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.TagActors.actorsLabel"))}</label>
+        <input type="search" class="token-presets-search" placeholder="${escapeHTML(game.i18n.localize("TOKEN_PRESETS.Search.placeholder"))}"/>
+        <select id="token-presets-tag-actors" name="actorIds" multiple size="14">${actorOptions}</select>
+        <p class="hint">${escapeHTML(game.i18n.localize("TOKEN_PRESETS.TagActors.hint"))}</p>
+      </div>
     </div>
   `;
 
   const dialogClass = "token-presets-tag-actors-dialog";
+  let teardownTree = () => {};
+  let teardownSplitter = () => {};
   const renderHookId = Hooks.on("renderDialogV2", (app) => {
     if (!app.options.classes?.includes(dialogClass)) return;
     Hooks.off("renderDialogV2", renderHookId);
     const root = app.element;
-    const folderSel = root.querySelector("select[name='folderId']");
     const actorSel = root.querySelector("select[name='actorIds']");
-    if (!folderSel || !actorSel) return;
-    const filter = () => {
-      const allowed = actorIdsInFolderFilter(folderSel.value);
-      applyFolderFilterToList(actorSel, allowed, (opt) => opt.value || null);
+    const searchEl = root.querySelector("input.token-presets-search");
+    const treeContainer = root.querySelector(".token-presets-folder-tree-container");
+    const splitterEl = root.querySelector(".explorer-splitter");
+    if (!actorSel) return;
+
+    let folderId = "";
+    let searchTerm = "";
+    const reapply = () => {
+      const allowed = actorIdsInFolderFilter(folderId);
+      applyCombinedFilter(actorSel, allowed, searchTerm, (opt) => opt.value || null);
     };
-    folderSel.addEventListener("change", filter);
+
+    teardownTree = setupFolderTreeHandlers(root, (newFolderId) => {
+      folderId = newFolderId;
+      reapply();
+    });
+    searchEl?.addEventListener("input", () => {
+      searchTerm = searchEl.value;
+      reapply();
+    });
+    teardownSplitter = setupSplitter(treeContainer, splitterEl);
   });
 
   const { DialogV2 } = foundry.applications.api;
   const result = await DialogV2.wait({
     window: {
       title: game.i18n.localize("TOKEN_PRESETS.TagActors.title"),
-      icon: "fa-solid fa-tag"
+      icon: "fa-solid fa-tag",
+      resizable: true
     },
     classes: [dialogClass],
     content,
-    position: { width: 500 },
+    position: { width: 720 },
     buttons: [
       {
         action: "apply",
@@ -675,6 +924,8 @@ async function openTagActorsDialog() {
     rejectClose: false
   });
   Hooks.off("renderDialogV2", renderHookId);
+  teardownTree();
+  teardownSplitter();
 
   if (!result) return;
   if (!result.actorIds?.length) {
