@@ -44,7 +44,7 @@
           </select>
           {{else if (eq f.type "number")}}
           {{#if f.plain}}
-          <input type="number" class="plain-number" value="{{f.value}}" min="{{f.min}}" disabled/>
+          <input type="number" class="plain-number" value="{{f.value}}" min="{{f.min}}" {{#if f.max}}max="{{f.max}}"{{/if}} {{#if f.step}}step="{{f.step}}"{{/if}} disabled/>
           {{else}}
           <range-picker value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}" disabled></range-picker>
           {{/if}}
@@ -105,7 +105,7 @@
           </select>
           {{else if (eq f.type "number")}}
           {{#if f.plain}}
-          <input type="number" class="plain-number" name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}"/>
+          <input type="number" class="plain-number" name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}" {{#if f.max}}max="{{f.max}}"{{/if}} {{#if f.step}}step="{{f.step}}"{{/if}}/>
           {{else}}
           <range-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}"></range-picker>
           {{/if}}

@@ -1,4 +1,4 @@
-{  "TOKEN_PRESETS.Manager.title": "Token Presets",
+{ "TOKEN_PRESETS.Manager.title": "Token Presets",
   "TOKEN_PRESETS.Manager.save": "Save",
   "TOKEN_PRESETS.Manager.new": "New Preset",
   "TOKEN_PRESETS.Manager.delete": "Delete preset",
@@ -128,6 +128,8 @@
 
   "TOKEN_PRESETS.Field.visionEnabled": "Vision Enabled",
   "TOKEN_PRESETS.Field.visionRange": "Vision Range (ft)",
+  "TOKEN_PRESETS.Field.visionAngle": "Vision Angle (deg)",
+  "TOKEN_PRESETS.Field.visionMode": "Vision Mode",
 
   "TOKEN_PRESETS.Section.identity": "Identity",
   "TOKEN_PRESETS.Section.appearance": "Appearance",

@@ -23,8 +23,11 @@ Each preset can set any combination of:
   any combination of ring effects (Ring Pulse, Ring Gradient,
   Background Wave, Spectral Pulse, Color Over Subject), and a
   subject-scale slider
-- Vision - vision enabled and vision range. *Heads up: if another
-  module also manages token vision, that module may override these.*
+- Vision - vision enabled, vision range, vision angle, and vision
+  mode (Basic Vision, Darkvision, Tremorsense, etc. — whatever your
+  system / modules provide). *Heads up: if another module also
+  manages token vision, the field will be disabled in the preset
+  manager and that module's behaviour will take precedence.*
 
 You can make as many presets as you like.
 

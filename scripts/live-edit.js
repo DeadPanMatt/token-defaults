@@ -5,6 +5,7 @@ import {
   applyField,
   readFieldValue
 } from "./constants.js";
+import { applyConflictDisable } from "./conflict-detection.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -159,6 +160,7 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
     )) {
       cb.indeterminate = true;
     }
+    applyConflictDisable(this.element);
   }
 
   static async #onSubmit(_event, _form, formData) {
@@ -235,8 +237,12 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
     if (def.type === "select") {
       const raw = submitted?.value;
       if (raw === undefined || raw === "" || raw === MIXED) return { changed: false };
-      const value = Number(raw);
-      if (initial !== MIXED && value === Number(initial)) return { changed: false };
+      const isString = def.valueType === "string";
+      const value = isString ? raw : Number(raw);
+      if (initial !== MIXED) {
+        const initialNorm = isString ? initial : Number(initial);
+        if (value === initialNorm) return { changed: false };
+      }
       return { changed: true, value };
     }
 

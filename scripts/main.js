@@ -10,6 +10,7 @@ import {
 } from "./constants.js";
 import { PresetManager } from "./config-app.js";
 import { LiveEditForm } from "./live-edit.js";
+import { installConflictDetection } from "./conflict-detection.js";
 
 Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTINGS.PRESETS, {
@@ -26,6 +27,13 @@ Hooks.once("init", () => {
     default: ""
   });
 
+  game.settings.register(MODULE_ID, SETTINGS.MANAGED_FIELDS, {
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
+  });
+
   game.settings.registerMenu(MODULE_ID, "presetManager", {
     name: "TOKEN_PRESETS.Menu.presetManager.name",
     label: "TOKEN_PRESETS.Menu.presetManager.label",
@@ -36,6 +44,7 @@ Hooks.once("init", () => {
   });
 
   patchActorCreateDialog();
+  installConflictDetection();
 });
 
 Hooks.on("preCreateToken", (tokenDoc) => {

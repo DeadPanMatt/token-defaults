@@ -2,7 +2,7 @@
   "id": "token-presets",
   "title": "Token Presets",
   "description": "Save named token presets and apply them automatically to new actors, in bulk to existing ones, or directly to tokens already on the canvas.",
-  "version": "0.17.0",
+  "version": "0.18.1",
   "manifestPlusVersion": "1.2.0",
   "authors": [
     {
@@ -30,7 +30,7 @@
   "socket": true,
   "url": "https://github.com/DeadPanMatt/token-presets",
   "manifest": "https://raw.githubusercontent.com/DeadPanMatt/token-presets/main/module.json",
-  "download": "https://github.com/DeadPanMatt/token-presets/archive/refs/tags/v0.17.0.zip",
+  "download": "https://github.com/DeadPanMatt/token-presets/archive/refs/tags/v0.18.1.zip",
   "readme": "https://raw.githubusercontent.com/DeadPanMatt/token-presets/main/README.md",
   "changelog": "https://raw.githubusercontent.com/DeadPanMatt/token-presets/main/CHANGELOG.md",
   "bugs": "https://github.com/DeadPanMatt/token-presets/issues",

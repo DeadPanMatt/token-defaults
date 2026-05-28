@@ -7,6 +7,7 @@ import {
   BUILTIN_FOUNDRY_DEFAULT_ID,
   emptyPreset
 } from "./constants.js";
+import { applyConflictDisable } from "./conflict-detection.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -142,6 +143,11 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
     return out;
   }
 
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+    applyConflictDisable(this.element);
+  }
+
   #captureFormState() {
     if (!this.element) return;
     const FDE = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
@@ -191,7 +197,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
           let v = f.value;
           if (def.type === "select" || def.type === "number") {
             if (v === "") continue;
-            v = Number(v);
+            if (def.valueType !== "string") v = Number(v);
           }
           target.fields[fk].value = v;
         }

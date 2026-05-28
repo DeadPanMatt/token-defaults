@@ -7,6 +7,45 @@ directly to tokens already on the canvas.
 
 ---
 
+## 0.18.1 - Rest of the Basic Vision fields
+
+The Vision section now covers the full **Basic Configuration** group
+Foundry shows in its own Token Config:
+
+- **Vision Angle (deg)** - 0–360, default 360. For tokens that only see
+  in a cone.
+- **Vision Mode** - drop-down of every vision mode Foundry knows about
+  (Basic Vision, Darkvision, Light Amplification, Monochromatic,
+  Tremorsense, plus anything your system or modules add).
+
+Both pick up the "another module owns this field" disable / tooltip
+treatment from 0.18.0 automatically, so if Vision 5e is greying out
+the vision mode in Foundry's editor it'll be greyed out for us too.
+
+---
+
+## 0.18.0 - Respect other modules that own a field
+
+If another module (Vision 5e, Perfect Vision, a lighting / perception
+suite, etc.) is automatically managing one of the fields a preset can
+write to, the preset manager and live-edit form now **disable that
+field and show the same tooltip the other module uses on Foundry's
+own Token Config**. Hover the greyed-out field to see the originating
+module's explanation - same behaviour you'd see on the default editor.
+
+How it works under the hood: every time you open Foundry's Token
+Config, this module quietly looks at which inputs ended up disabled
+and remembers the result per-field. From then on our forms mirror
+that state. The cache self-corrects: if you uninstall or disable the
+other module, the next time you open Token Config the field comes
+back as editable on our side automatically.
+
+No setup required - it picks the cache up the first time you open
+Token Config on any token in a world where another module is doing
+the disabling.
+
+---
+
 ## 0.17.0 - Vision section, plus a couple of live-edit polishes
 
 **New: Vision section in the preset manager.** Presets can now set:

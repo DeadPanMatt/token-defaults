@@ -2,7 +2,8 @@ export const MODULE_ID = "token-presets";
 
 export const SETTINGS = {
   PRESETS: "presets",
-  DEFAULT_PRESET_ID: "defaultPresetId"
+  DEFAULT_PRESET_ID: "defaultPresetId",
+  MANAGED_FIELDS: "managedFields"
 };
 
 export const FLAGS = {
@@ -192,8 +193,38 @@ export const FIELD_DEFS = {
     plain: true,
     default: 0,
     min: 0
+  },
+  visionAngle: {
+    label: "TOKEN_PRESETS.Field.visionAngle",
+    type: "number",
+    section: "vision",
+    path: "sight.angle",
+    plain: true,
+    default: 360,
+    min: 0,
+    max: 360
+  },
+  visionMode: {
+    label: "TOKEN_PRESETS.Field.visionMode",
+    type: "select",
+    section: "vision",
+    path: "sight.visionMode",
+    options: getVisionModeOptions,
+    valueType: "string",
+    default: "basic"
   }
 };
+
+function getVisionModeOptions() {
+  const modes = CONFIG?.Canvas?.visionModes ?? {};
+  const out = {};
+  for (const [id, mode] of Object.entries(modes)) {
+    const raw = mode?.label;
+    const label = raw ? game.i18n.localize(raw) : id;
+    out[label] = id;
+  }
+  return out;
+}
 
 export function emptyPreset(name = "New Preset") {
   const fields = {};
@@ -236,7 +267,9 @@ export const BUILTIN_PRESETS = {
       ringSubjectScale:    { enabled: true, value: 1 },
       // Vision
       visionEnabled:       { enabled: true, value: false },
-      visionRange:         { enabled: true, value: 0 }
+      visionRange:         { enabled: true, value: 0 },
+      visionAngle:         { enabled: true, value: 360 },
+      visionMode:          { enabled: true, value: "basic" }
     }
   }
 };

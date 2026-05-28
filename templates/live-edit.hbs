@@ -42,6 +42,8 @@
                  name="fields.{{f.key}}.value"
                  {{#unless f.mixed}}value="{{f.value}}"{{/unless}}
                  min="{{f.min}}"
+                 {{#if f.max}}max="{{f.max}}"{{/if}}
+                 {{#if f.step}}step="{{f.step}}"{{/if}}
                  placeholder="{{localize 'TOKEN_PRESETS.LiveEdit.mixed'}}"/>
           {{else}}
           <range-picker name="fields.{{f.key}}.value"
