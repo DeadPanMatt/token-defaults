@@ -16,6 +16,7 @@
       {{#each p.sections as |s|}}
       <details class="section" open>
         <summary class="section-toggle"><i class="fa-solid fa-chevron-right"></i> {{localize s.label}}</summary>
+        {{#if s.hint}}<p class="section-hint">{{localize s.hint}}</p>{{/if}}
         {{#each s.fields as |f|}}
         <div class="field {{f.type}}">
           {{#if (eq f.type "boolean")}}
@@ -42,7 +43,11 @@
             {{/each}}
           </select>
           {{else if (eq f.type "number")}}
+          {{#if f.plain}}
+          <input type="number" class="plain-number" value="{{f.value}}" min="{{f.min}}" disabled/>
+          {{else}}
           <range-picker value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}" disabled></range-picker>
+          {{/if}}
           {{else if (eq f.type "color")}}
           <color-picker value="{{f.value}}" disabled></color-picker>
           {{/if}}
@@ -72,6 +77,7 @@
       {{#each p.sections as |s|}}
       <details class="section" open>
         <summary class="section-toggle"><i class="fa-solid fa-chevron-right"></i> {{localize s.label}}</summary>
+        {{#if s.hint}}<p class="section-hint">{{localize s.hint}}</p>{{/if}}
         {{#each s.fields as |f|}}
         <div class="field {{f.type}}">
           {{#if (eq f.type "boolean")}}
@@ -98,7 +104,11 @@
             {{/each}}
           </select>
           {{else if (eq f.type "number")}}
+          {{#if f.plain}}
+          <input type="number" class="plain-number" name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}"/>
+          {{else}}
           <range-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" min="{{f.min}}" max="{{f.max}}" step="{{f.step}}"></range-picker>
+          {{/if}}
           {{else if (eq f.type "color")}}
           <color-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}"></color-picker>
           {{/if}}

@@ -116,6 +116,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
         key,
         label: def.label,
         type: def.type,
+        plain: !!def.plain,
         value: f.value,
         choices,
         min: def.min,
@@ -134,6 +135,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
       out.push({
         id,
         label: SECTIONS[id]?.label ?? id,
+        hint: SECTIONS[id]?.hint ?? null,
         fields
       });
     }

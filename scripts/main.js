@@ -5,9 +5,11 @@ import {
   FIELD_DEFS,
   BUILTIN_PRESETS,
   BUILTIN_FOUNDRY_DEFAULT_ID,
-  getPresetById
+  getPresetById,
+  applyField
 } from "./constants.js";
 import { PresetManager } from "./config-app.js";
+import { LiveEditForm } from "./live-edit.js";
 
 Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTINGS.PRESETS, {
@@ -17,7 +19,6 @@ Hooks.once("init", () => {
     default: {}
   });
 
-  // Remembers the last preset chosen, used as the default selection when picking for a new actor.
   game.settings.register(MODULE_ID, SETTINGS.DEFAULT_PRESET_ID, {
     scope: "client",
     config: false,
@@ -37,7 +38,6 @@ Hooks.once("init", () => {
   patchActorCreateDialog();
 });
 
-// Apply the actor's preset to a token at placement time.
 Hooks.on("preCreateToken", (tokenDoc) => {
   const actor = tokenDoc.actor;
   if (!actor) return;
@@ -57,53 +57,15 @@ Hooks.on("preCreateToken", (tokenDoc) => {
   if (Object.keys(updates).length) tokenDoc.updateSource(updates);
 });
 
-// A field's apply targets — supports either a single `path` or an array `paths`. */
-function fieldPaths(def) {
-  return def.paths ?? (def.path ? [def.path] : []);
-}
 
-/**
-  Apply one preset field's value to an in-progress update object.
-  Supports custom apply functions (for fields that don't map cleanly to a path,
-  e.g. mirror which composes with scale by sign-flipping).
- */
-function applyField(def, value, updates, snapshot, doc) {
-  if (typeof def.apply === "function") {
-    def.apply(value, updates, snapshot, doc);
-    return;
-  }
-  // Color and image fields write null instead of empty string so Foundry's
-  // ColorField / FilePathField schemas accept the cleared state.
-  let writeValue = value;
-  if ((def.type === "color" || def.type === "image") && writeValue === "") {
-    writeValue = null;
-  } else if (def.type === "flags") {
-    if (typeof writeValue === "number") {
-      const flagsMap = def.options?.() ?? {};
-      const bitmask = writeValue;
-      writeValue = Object.entries(flagsMap)
-        .filter(([, bit]) => (bitmask & bit) === bit)
-        .map(([n]) => n);
-    }
-    if (!Array.isArray(writeValue)) writeValue = [];
-  }
-  for (const path of fieldPaths(def)) {
-    if (snapshot) snapshot[path] = foundry.utils.getProperty(doc, path);
-    foundry.utils.setProperty(updates, path, writeValue);
-  }
-}
-
-// Per-actor context menu: "Set Token Preset…" — register on every plausible hook name
 for (const hook of ["getActorContextOptions", "getActorDirectoryEntryContext"]) {
   Hooks.on(hook, (_appOrHtml, options) => addActorContextOption(options));
 }
 
-// Per-folder context menu: "Set Token Preset for All Actors…"
 for (const hook of ["getFolderContextOptions", "getActorFolderContextOptions", "getActorDirectoryFolderContext"]) {
   Hooks.on(hook, (_appOrHtml, options) => addFolderContextOption(options));
 }
 
-// Token Controls toolbar button: "Apply Preset to Selection"
 Hooks.on("getSceneControlButtons", (controls) => addTokenToolbarButton(controls));
 
 const SNAPSHOT_KEY = "prePush";
@@ -123,7 +85,6 @@ function patchActorCreateDialog() {
       currentPresetId: lastUsed
     });
 
-    /* Picker cancelled or closed → abort the whole create flow.*/
     if (choice === undefined || choice === null) return null;
 
     if (choice) {
@@ -474,7 +435,8 @@ class LandingPage extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       manage: LandingPage.#onManage,
       applyTokens: LandingPage.#onApplyTokens,
-      tagActors: LandingPage.#onTagActors
+      tagActors: LandingPage.#onTagActors,
+      editLive: LandingPage.#onEditLive
     }
   };
 
@@ -493,6 +455,10 @@ class LandingPage extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onTagActors() {
     await openTagActorsDialog();
   }
+
+  static async #onEditLive() {
+    await openLiveEditForm();
+  }
 }
 
 let _landingInstance = null;
@@ -504,6 +470,25 @@ function openLandingDialog() {
   }
   _landingInstance = new LandingPage();
   _landingInstance.render({ force: true });
+}
+
+async function openLiveEditForm() {
+  const controlled = canvas?.tokens?.controlled ?? [];
+  const docs = controlled.map((t) => t.document).filter(Boolean);
+  if (!docs.length) {
+    const { DialogV2 } = foundry.applications.api;
+    await DialogV2.prompt({
+      window: {
+        title: game.i18n.localize("TOKEN_PRESETS.LiveEdit.noSelectionTitle"),
+        icon: "fa-solid fa-circle-info"
+      },
+      content: `<p>${escapeHTML(game.i18n.localize("TOKEN_PRESETS.LiveEdit.noSelection"))}</p>`,
+      ok: { label: game.i18n.localize("TOKEN_PRESETS.LiveEdit.ok") },
+      rejectClose: false
+    }).catch(() => null);
+    return;
+  }
+  new LiveEditForm(docs).render({ force: true });
 }
 
 function buildActorFolderTree() {
@@ -1129,7 +1114,6 @@ async function confirmPush(message) {
   }).catch(() => false);
 }
 
-/* Shared preset picker dialog.                                              */
 async function pickPreset({ promptText, currentPresetId = "" }) {
   const builtins = Object.values(BUILTIN_PRESETS);
   const userPresets = Object.values(game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? {});

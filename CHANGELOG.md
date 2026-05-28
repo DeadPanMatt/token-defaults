@@ -7,6 +7,70 @@ directly to tokens already on the canvas.
 
 ---
 
+## 0.17.0 - Vision section, plus a couple of live-edit polishes
+
+**New: Vision section in the preset manager.** Presets can now set:
+
+- **Vision Enabled** - whether the token can see.
+- **Vision Range** - in scene units, 0–500.
+
+This appears as a fourth section in the preset manager (after Identity,
+Appearance, and Dynamic Token Ring) and is also available in the live
+edit form.
+
+> **Heads up:** if another module also manages token vision (vision
+> overhauls, dynamic-lighting suites, perception-system rewrites, etc.)
+> its behaviour may override what this preset writes. Foundry-default
+> vision is the only case guaranteed to work as you'd expect.
+
+**Live-edit polishes:**
+
+- The form body now **scrolls inside the window** if the field list is
+  taller than the dialog. Previously it would just clip the bottom.
+- If you click **Edit Selected Tokens (Live)** without anything
+  selected, you now get a small pop-up explaining what to do (with an
+  **OK** button) instead of a fleeting toast notification.
+
+---
+
+## 0.16.0 - Edit selected tokens directly, no preset needed
+
+A new **Edit Selected Tokens (Live)** option in the Token Presets hub
+opens a one-shot edit form for whatever tokens you have selected on the
+canvas. Same field set as the preset manager (Identity, Appearance,
+Dynamic Token Ring) but the values you enter go straight to the
+selected tokens - no preset is saved.
+
+The form shows the **current value** of each field when all selected
+tokens agree on it, or **-Mixed-** when they differ:
+
+- Drop-downs show "— Mixed —" at the top when tokens disagree on the
+  value; pick a real option to set them all the same.
+- Checkboxes (and individual Ring Effect bits) render in their native
+  three-state mode: ticked / unticked / indeterminate. Leave one
+  indeterminate to leave that field alone on each token.
+- Numbers and colours show a "mixed" placeholder when tokens differ.
+
+Only fields you actually change get written. So if you select five
+tokens with different scales and just tick the **Lock Rotation** box,
+the five different scales are preserved - only Lock Rotation flips.
+
+Use it when:
+
+- You want to recolour a handful of summons all at once without making
+  a preset.
+- You realised mid-session that your party tokens need their disposition
+  fixed and don't want to right-click each one.
+- You want a quick way to tweak ring effects on a group without
+  visiting Token Config five times.
+
+To open it: select your tokens on the canvas first, then click the
+user-gear icon in Token Controls and pick **Edit Selected Tokens
+(Live)**. If you forget to select anything, the option just warns and
+bails.
+
+---
+
 ## 0.15.1 - Filter dialogs now grow with the window
 
 When you drag the **Apply Preset to Canvas Tokens** or **Tag Actors

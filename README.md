@@ -23,6 +23,8 @@ Each preset can set any combination of:
   any combination of ring effects (Ring Pulse, Ring Gradient,
   Background Wave, Spectral Pulse, Color Over Subject), and a
   subject-scale slider
+- Vision - vision enabled and vision range. *Heads up: if another
+  module also manages token vision, that module may override these.*
 
 You can make as many presets as you like.
 
@@ -136,6 +138,42 @@ about to change.
 
 ---
 
+## Quick mass-edit without saving a preset
+
+Sometimes you just want to flip one or two fields on a handful of
+tokens and don't want to make a whole preset for it. The **Edit
+Selected Tokens (Live)** option does exactly that - one-off changes,
+nothing saved.
+
+1. Select the tokens you want to change on the canvas.
+2. Under **Token Controls** click on the user / Gear icon.
+3. Click **Edit Selected Tokens (Live)**.
+4. A form opens listing every preset field. For each one:
+   - If all your selected tokens currently share the same value, that
+     value is pre-filled - leave it as-is or change it.
+   - If they differ, you'll see **— Mixed —** in the box (or a
+     half-filled checkbox for tick-boxes). Leave it as Mixed to
+     preserve each token's own value, or set a real value to make
+     them all match.
+5. Click **Apply**.
+
+**Only the fields you actually change are written.** If you only
+ticked Lock Rotation, your tokens' scales, colours and dispositions
+stay exactly as they were - even on the ones with mixed values. So
+you can mass-fix one thing without trampling everything else.
+
+Good times to reach for it:
+
+- Toggling Lock Rotation across the whole party in one go.
+- Fixing the disposition on a group you grabbed from a compendium.
+- Tweaking ring effects on a handful of summons.
+- Anything you'd otherwise open Token Config five times for.
+
+If you click the option with nothing selected, you get a small pop-up
+reminding you to pick some tokens first.
+
+---
+
 ## "Foundry Default" - your reset button
 
 Tucked at the top of the preset manager is a section called **View
@@ -159,9 +197,9 @@ You can't edit it, but you can:
 
 ## A few useful tips
 
-- **Sections fold up.** Each preset has Identity, Appearance, and
-  Dynamic Token Ring sections. Click a section header to collapse it
-  if it's in the way.
+- **Sections fold up.** Each preset has Identity, Appearance, Dynamic
+  Token Ring, and Vision sections. Click a section header to collapse
+  it if it's in the way.
 - **A preset applies *every* setting it has.** There's no "leave this
   alone" option - when you apply a preset, all of its values get written
   to the token. So if you want a preset that only changes disposition,
@@ -176,8 +214,10 @@ You can't edit it, but you can:
 
 ## Future plans
 
-- **Vision.** Add Vision controls (Basic, Detection, and Advanced) to
-  the preset menu.
+- **Detection modes and advanced vision.** Vision basics (enabled +
+  range) are in; richer controls - detection modes, special vision
+  modes, and the rest of the Advanced sight settings - could follow
+  if there's interest.
 
 ## Found a bug? Have an idea?
 

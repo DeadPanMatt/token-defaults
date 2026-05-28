@@ -26,7 +26,6 @@
   border-radius: 4px;
 }
 
-/*Builtin presets (locked)*/
 .token-presets fieldset.preset {
   padding: 0.5em 0.75em;
 }
@@ -38,7 +37,6 @@
   width: 100%;
 }
 
-/* User presets are <details> wrappers so each can be collapsed individually */
 .token-presets details.preset > .preset-header {
   display: flex;
   gap: 0.5em;
@@ -89,8 +87,6 @@
   padding: 0.5em 0.75em;
 }
 
-/* Section sub-panels within a preset — Foundry-native fieldset look:
-   full rounded border with a header at the top that visually anchors the group. */
 .token-presets .preset .section {
   margin: 0.5em 0;
   border: 1px solid var(--color-border-light-tertiary, #999);
@@ -126,6 +122,13 @@
   transform: rotate(90deg);
 }
 
+.token-presets .section-hint {
+  margin: 0.25em 0 0.5em;
+  font-style: italic;
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
 .token-presets .field {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) 1fr;
@@ -154,6 +157,12 @@
   flex: 0 0 auto;
 }
 
+.token-presets input.plain-number {
+  width: 5em;
+  max-width: 100%;
+  justify-self: start;
+}
+
 .token-presets .field.flags {
   grid-template-columns: 1fr;
   gap: 0.25em;
@@ -173,7 +182,6 @@
   margin: 0;
 }
 
-/* "View Foundry Defaults" disclosure */
 .token-presets .defaults-panel {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 4px;
@@ -237,7 +245,6 @@
   margin: 1em 0;
 }
 
-/* Multi-token picker dialog (toolbar "Apply Token Preset…") */
 .token-presets-token-list select[multiple],
 .token-presets-actor-list select[multiple] {
   width: 100%;
@@ -252,7 +259,72 @@
   text-align: left;
 }
 
-/* Landing page (ApplicationV2 window): stacked action buttons. */
+.token-presets-live-edit .window-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.token-presets-live-edit .live-edit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 0.5em 0.75em;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.token-presets-live-edit .form-footer {
+  flex: 0 0 auto;
+}
+
+.token-presets-live-edit .live-edit-summary {
+  margin: 0 0 0.25em;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.token-presets-live-edit .live-edit-section {
+  margin: 0;
+  padding: 0.25em 0.75em 0.5em;
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.token-presets-live-edit .live-edit-section > legend {
+  padding: 0 0.4em;
+  font-weight: 600;
+}
+
+.token-presets-live-edit .live-edit-field.mixed > label::after {
+  content: " (mixed)";
+  font-style: italic;
+  opacity: 0.6;
+  font-size: 0.85em;
+}
+
+.token-presets-live-edit .live-edit-field .mixed-hint {
+  font-style: italic;
+  opacity: 0.7;
+  font-size: 0.85em;
+  margin-left: 0.5em;
+}
+
+.token-presets-live-edit .live-edit-field.flags .flag-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.15em 0.75em;
+}
+
+.token-presets-live-edit .live-edit-field.flags .flag-list .checkbox {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  margin: 0;
+}
+
 .token-presets-landing-app .landing-body {
   display: flex;
   flex-direction: column;
@@ -289,18 +361,12 @@
   text-align: center;
 }
 
-/* Constrain top-of-dialog form rows so long preset names don't push the dialog
-   width past the window. Targets just the two filter dialogs. */
 .application.token-presets-multi-picker-dialog .window-content > form .form-group,
 .application.token-presets-tag-actors-dialog .window-content > form .form-group {
   max-width: 100%;
   min-width: 0;
 }
 
-/* Vertical grow chain: when the dialog is resized taller, the explorer pane
-   (folder tree / token filter + list) fills the new space. Every flex ancestor
-   needs min-height: 0 so children are allowed to grow past their content
-   intrinsic size. */
 .application.token-presets-multi-picker-dialog .window-content,
 .application.token-presets-tag-actors-dialog .window-content {
   display: flex;
@@ -317,10 +383,6 @@
   gap: 0.5em;
 }
 
-/* V14's DialogV2 wraps user content in a .dialog-content element between the
-   form and our markup. It defaults to flex: 0 1 auto so it sits at content
-   height — which traps the footer with empty space below. Force it to fill
-   the form so the footer rides the dialog's bottom edge. */
 .application.token-presets-multi-picker-dialog .window-content form > .dialog-content,
 .application.token-presets-tag-actors-dialog .window-content form > .dialog-content {
   display: flex;
@@ -330,26 +392,17 @@
   gap: 0.5em;
 }
 
-/* The top "Preset" picker stays compact so it doesn't compete with the
-   explorer for vertical space. Targets the form-group as a direct child of
-   .dialog-content (not the nested .explorer-list-pane form-group). */
 .application.token-presets-multi-picker-dialog .dialog-content > .form-group,
 .application.token-presets-tag-actors-dialog .dialog-content > .form-group {
   flex: 0 0 auto;
 }
 
-/* The explorer is the one element that should absorb the extra space. */
 .application.token-presets-multi-picker-dialog .token-presets-explorer,
 .application.token-presets-tag-actors-dialog .token-presets-explorer {
   flex: 1 1 auto;
   min-height: 0;
 }
 
-/* Inside each pane: be explicit about which child is compact and which one
-   grows. Without this, Foundry's form-group defaults can let labels/inputs
-   share vertical space with the scrollable child, leaving it floating with
-   empty gaps above. Override to a deterministic "header pinned top, scroll
-   area fills the rest" layout. */
 .token-presets-explorer .token-presets-folder-tree-container,
 .token-presets-explorer .token-presets-token-filter-container,
 .token-presets-explorer .explorer-list-pane {
@@ -380,7 +433,6 @@
   box-sizing: border-box;
 }
 
-/* Explorer-style two-pane layout: folder tree (left) + actor/token list (right) */
 .token-presets-explorer {
   display: flex;
   gap: 0.75em;
@@ -391,8 +443,6 @@
 
 .token-presets-explorer .token-presets-folder-tree-container,
 .token-presets-explorer .token-presets-token-filter-container {
-  /* Fixed 200px starting width; don't grow into available dialog space.
-     The splitter overrides this with an inline style when dragged. */
   flex: 0 0 200px;
   overflow: auto;
   min-width: 160px;
@@ -403,7 +453,6 @@
   margin: 0;
 }
 
-/* Token-attribute filter pane (apply-to-canvas dialog) */
 .token-presets-token-filter-container {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 4px;
@@ -472,7 +521,6 @@
   text-align: center;
 }
 
-/* Disposition icon tints (scoped to the filter pane) */
 .token-presets-token-filter-container .disposition-hostile { color: #c0392b; }
 .token-presets-token-filter-container .disposition-neutral { color: #b8a73b; }
 .token-presets-token-filter-container .disposition-friendly { color: #2e8b57; }
@@ -505,7 +553,6 @@
   font-size: 0.95em;
 }
 
-/* Draggable splitter between tree and list panes */
 .token-presets-explorer .explorer-splitter {
   flex: 0 0 6px;
   cursor: col-resize;
@@ -534,7 +581,6 @@
   flex: 0 0 auto;
 }
 
-/* Folder tree (Actor folders, used in both filter dialogs) */
 .token-presets-folder-tree-container {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 4px;
@@ -664,7 +710,6 @@
   opacity: 0.75;
 }
 
-/* Right-click context menu over a folder row */
 .token-presets-folder-ctxmenu {
   position: fixed;
   z-index: 10000;

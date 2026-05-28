@@ -12,7 +12,8 @@ export const FLAGS = {
 export const SECTIONS = {
   identity:   { label: "TOKEN_PRESETS.Section.identity" },
   appearance: { label: "TOKEN_PRESETS.Section.appearance" },
-  ring:       { label: "TOKEN_PRESETS.Section.ring" }
+  ring:       { label: "TOKEN_PRESETS.Section.ring" },
+  vision:     { label: "TOKEN_PRESETS.Section.vision", hint: "TOKEN_PRESETS.Section.visionHint" }
 };
 
 export function getRingEffectFlags() {
@@ -77,6 +78,7 @@ export const FIELD_DEFS = {
     type: "number",
     section: "appearance",
     paths: ["texture.scaleX", "texture.scaleY"],
+    read: (doc) => Math.abs(foundry.utils.getProperty(doc, "texture.scaleX") ?? 1),
     default: 1,
     min: 0.2,
     max: 3,
@@ -115,6 +117,7 @@ export const FIELD_DEFS = {
     type: "boolean",
     section: "appearance",
     apply: mirrorApply("h"),
+    read: (doc) => (foundry.utils.getProperty(doc, "texture.scaleX") ?? 1) < 0,
     default: false
   },
   mirrorV: {
@@ -122,6 +125,7 @@ export const FIELD_DEFS = {
     type: "boolean",
     section: "appearance",
     apply: mirrorApply("v"),
+    read: (doc) => (foundry.utils.getProperty(doc, "texture.scaleY") ?? 1) < 0,
     default: false
   },
   lockRotation: {
@@ -170,6 +174,24 @@ export const FIELD_DEFS = {
     min: 0.5,
     max: 3,
     step: 0.02
+  },
+
+  // Vision
+  visionEnabled: {
+    label: "TOKEN_PRESETS.Field.visionEnabled",
+    type: "boolean",
+    section: "vision",
+    path: "sight.enabled",
+    default: false
+  },
+  visionRange: {
+    label: "TOKEN_PRESETS.Field.visionRange",
+    type: "number",
+    section: "vision",
+    path: "sight.range",
+    plain: true,
+    default: 0,
+    min: 0
   }
 };
 
@@ -211,7 +233,10 @@ export const BUILTIN_PRESETS = {
       ringColor:           { enabled: true, value: "" },
       ringBackground:      { enabled: true, value: "" },
       ringEffects:         { enabled: true, value: [] },
-      ringSubjectScale:    { enabled: true, value: 1 }
+      ringSubjectScale:    { enabled: true, value: 1 },
+      // Vision
+      visionEnabled:       { enabled: true, value: false },
+      visionRange:         { enabled: true, value: 0 }
     }
   }
 };
@@ -221,4 +246,41 @@ export function getPresetById(id) {
   if (BUILTIN_PRESETS[id]) return BUILTIN_PRESETS[id];
   const user = game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? {};
   return user[id] ?? null;
+}
+
+
+export function fieldPaths(def) {
+  return def.paths ?? (def.path ? [def.path] : []);
+}
+
+export function applyField(def, value, updates, snapshot, doc) {
+  if (typeof def.apply === "function") {
+    def.apply(value, updates, snapshot, doc);
+    return;
+  }
+  let writeValue = value;
+  if ((def.type === "color" || def.type === "image") && writeValue === "") {
+    writeValue = null;
+  } else if (def.type === "flags") {
+    if (typeof writeValue === "number") {
+      const flagsMap = def.options?.() ?? {};
+      const bitmask = writeValue;
+      writeValue = Object.entries(flagsMap)
+        .filter(([, bit]) => (bitmask & bit) === bit)
+        .map(([n]) => n);
+    }
+    if (!Array.isArray(writeValue)) writeValue = [];
+  }
+  for (const path of fieldPaths(def)) {
+    if (snapshot) snapshot[path] = foundry.utils.getProperty(doc, path);
+    foundry.utils.setProperty(updates, path, writeValue);
+  }
+}
+
+export function readFieldValue(def, doc) {
+  if (typeof def.read === "function") return def.read(doc);
+  const path = def.path ?? def.paths?.[0];
+  if (!path) return def.default;
+  const v = foundry.utils.getProperty(doc, path);
+  return v === undefined ? def.default : v;
 }

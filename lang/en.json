@@ -1,5 +1,4 @@
-{
-  "TOKEN_PRESETS.Manager.title": "Token Presets",
+{  "TOKEN_PRESETS.Manager.title": "Token Presets",
   "TOKEN_PRESETS.Manager.save": "Save",
   "TOKEN_PRESETS.Manager.new": "New Preset",
   "TOKEN_PRESETS.Manager.delete": "Delete preset",
@@ -49,6 +48,19 @@
   "TOKEN_PRESETS.Landing.manage": "Manage / create Presets",
   "TOKEN_PRESETS.Landing.applyTokens": "Apply Preset to Canvas Tokens",
   "TOKEN_PRESETS.Landing.tagActors": "Tag Actors with a Preset",
+  "TOKEN_PRESETS.Landing.editLive": "Edit Selected Tokens (Live)",
+
+  "TOKEN_PRESETS.LiveEdit.title": "Edit Selected Tokens",
+  "TOKEN_PRESETS.LiveEdit.apply": "Apply",
+  "TOKEN_PRESETS.LiveEdit.mixed": "-Mixed-",
+  "TOKEN_PRESETS.LiveEdit.noSelectionTitle": "No Tokens Selected",
+  "TOKEN_PRESETS.LiveEdit.noSelection": "Select one or more tokens on the canvas first, then try again.",
+  "TOKEN_PRESETS.LiveEdit.ok": "OK",
+  "TOKEN_PRESETS.LiveEdit.noChanges": "No changes to apply.",
+  "TOKEN_PRESETS.LiveEdit.done": "Updated {count} token(s).",
+  "TOKEN_PRESETS.LiveEdit.targetingPrefix": "Editing",
+  "TOKEN_PRESETS.LiveEdit.targetingTokenSingular": "selected token. Fields where the tokens differ show as “Mixed”; only fields you change get written.",
+  "TOKEN_PRESETS.LiveEdit.targetingTokenPlural": "selected tokens. Fields where the tokens differ show as “Mixed”; only fields you change get written.",
 
   "TOKEN_PRESETS.TagActors.title": "Tag Actors with a Preset",
   "TOKEN_PRESETS.TagActors.actorsLabel": "Actors (current tag shown after the name)",
@@ -114,7 +126,12 @@
   "TOKEN_PRESETS.Field.ringEffects": "Ring Effects",
   "TOKEN_PRESETS.Field.ringSubjectScale": "Subject Scale Correction",
 
+  "TOKEN_PRESETS.Field.visionEnabled": "Vision Enabled",
+  "TOKEN_PRESETS.Field.visionRange": "Vision Range (ft)",
+
   "TOKEN_PRESETS.Section.identity": "Identity",
   "TOKEN_PRESETS.Section.appearance": "Appearance",
-  "TOKEN_PRESETS.Section.ring": "Dynamic Token Ring"
+  "TOKEN_PRESETS.Section.ring": "Dynamic Token Ring",
+  "TOKEN_PRESETS.Section.vision": "Vision",
+  "TOKEN_PRESETS.Section.visionHint": "Heads up: if another module also manages token vision (vision overhauls, lighting suites, etc.) its behaviour may override these values."
 }

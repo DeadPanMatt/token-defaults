@@ -1,0 +1,79 @@
+<div class="live-edit-body">
+  <p class="live-edit-summary">
+    {{localize "TOKEN_PRESETS.LiveEdit.targetingPrefix"}}
+    <strong>{{tokenCount}}</strong>
+    {{#if (eq tokenCount 1)}}
+      {{localize "TOKEN_PRESETS.LiveEdit.targetingTokenSingular"}}
+    {{else}}
+      {{localize "TOKEN_PRESETS.LiveEdit.targetingTokenPlural"}}
+    {{/if}}
+  </p>
+
+  {{#each sections as |s|}}
+  <fieldset class="live-edit-section" data-section="{{s.id}}">
+    <legend>{{localize s.label}}</legend>
+    {{#if s.hint}}<p class="section-hint">{{localize s.hint}}</p>{{/if}}
+
+    {{#each s.fields as |f|}}
+    <div class="form-group live-edit-field {{f.type}}{{#if f.mixed}} mixed{{/if}}" data-field="{{f.key}}">
+      <label>{{localize f.label}}</label>
+      <div class="form-fields">
+
+        {{#if (eq f.type "boolean")}}
+          <input type="checkbox"
+                 name="fields.{{f.key}}.value"
+                 {{#if f.mixed}}data-mixed="true"{{else}}{{#if f.value}}checked{{/if}}{{/if}}/>
+          {{#if f.mixed}}<span class="mixed-hint">{{localize "TOKEN_PRESETS.LiveEdit.mixed"}}</span>{{/if}}
+
+        {{else if (eq f.type "select")}}
+          <select name="fields.{{f.key}}.value">
+            {{#if f.mixed}}
+              <option value="__token-presets:mixed__" selected>{{localize "TOKEN_PRESETS.LiveEdit.mixed"}}</option>
+            {{/if}}
+            {{#each f.choices as |c|}}
+              <option value="{{c.value}}" {{#if c.selected}}selected{{/if}}>{{c.label}}</option>
+            {{/each}}
+          </select>
+
+        {{else if (eq f.type "number")}}
+          {{#if f.plain}}
+          <input type="number"
+                 class="plain-number"
+                 name="fields.{{f.key}}.value"
+                 {{#unless f.mixed}}value="{{f.value}}"{{/unless}}
+                 min="{{f.min}}"
+                 placeholder="{{localize 'TOKEN_PRESETS.LiveEdit.mixed'}}"/>
+          {{else}}
+          <range-picker name="fields.{{f.key}}.value"
+                        {{#unless f.mixed}}value="{{f.value}}"{{/unless}}
+                        min="{{f.min}}"
+                        max="{{f.max}}"
+                        step="{{f.step}}"
+                        placeholder="{{localize 'TOKEN_PRESETS.LiveEdit.mixed'}}"></range-picker>
+          {{/if}}
+
+        {{else if (eq f.type "color")}}
+          <color-picker name="fields.{{f.key}}.value"
+                        {{#unless f.mixed}}value="{{f.value}}"{{/unless}}
+                        placeholder="{{localize 'TOKEN_PRESETS.LiveEdit.mixed'}}"></color-picker>
+
+        {{else if (eq f.type "flags")}}
+          <div class="flag-list">
+            {{#each f.choices as |c|}}
+              <label class="checkbox">
+                <input type="checkbox"
+                       name="fields.{{f.key}}.flags.{{c.name}}"
+                       {{#if (eq c.state "on")}}checked{{/if}}
+                       {{#if (eq c.state "mixed")}}data-mixed="true"{{/if}}/>
+                <span>{{c.label}}</span>
+              </label>
+            {{/each}}
+          </div>
+
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </fieldset>
+  {{/each}}
+</div>
