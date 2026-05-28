@@ -140,10 +140,10 @@ about to change.
 
 ## Quick mass-edit without saving a preset
 
-Sometimes you just want to flip one or two fields on a handful of
+Sometimes you just want to change one or two fields on a handful of
 tokens and don't want to make a whole preset for it. The **Edit
 Selected Tokens (Live)** option does exactly that - one-off changes,
-nothing saved.
+nothing saved (the chnages are only made to the tokens on the scene, not the actors themselves).
 
 1. Select the tokens you want to change on the canvas.
 2. Under **Token Controls** click on the user / Gear icon.
@@ -151,7 +151,7 @@ nothing saved.
 4. A form opens listing every preset field. For each one:
    - If all your selected tokens currently share the same value, that
      value is pre-filled - leave it as-is or change it.
-   - If they differ, you'll see **— Mixed —** in the box (or a
+   - If they differ, you'll see **- Mixed -** in the box (or a
      half-filled checkbox for tick-boxes). Leave it as Mixed to
      preserve each token's own value, or set a real value to make
      them all match.
@@ -161,16 +161,6 @@ nothing saved.
 ticked Lock Rotation, your tokens' scales, colours and dispositions
 stay exactly as they were - even on the ones with mixed values. So
 you can mass-fix one thing without trampling everything else.
-
-Good times to reach for it:
-
-- Toggling Lock Rotation across the whole party in one go.
-- Fixing the disposition on a group you grabbed from a compendium.
-- Tweaking ring effects on a handful of summons.
-- Anything you'd otherwise open Token Config five times for.
-
-If you click the option with nothing selected, you get a small pop-up
-reminding you to pick some tokens first.
 
 ---
 
