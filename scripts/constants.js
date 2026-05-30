@@ -158,6 +158,14 @@ export const FIELD_DEFS = {
     path: "ring.colors.background",
     default: ""
   },
+  ringSubjectTexture: {
+    label: "TOKEN_PRESETS.Field.ringSubjectTexture",
+    hint: "TOKEN_PRESETS.Field.ringSubjectTextureHint",
+    type: "image",
+    section: "ring",
+    path: "ring.subject.texture",
+    default: ""
+  },
   ringEffects: {
     label: "TOKEN_PRESETS.Field.ringEffects",
     type: "flags",
@@ -263,6 +271,7 @@ export const BUILTIN_PRESETS = {
       ringEnabled:         { enabled: true, value: false },
       ringColor:           { enabled: true, value: "" },
       ringBackground:      { enabled: true, value: "" },
+      ringSubjectTexture:  { enabled: true, value: "" },
       ringEffects:         { enabled: true, value: [] },
       ringSubjectScale:    { enabled: true, value: 1 },
       // Vision
@@ -295,14 +304,18 @@ export function applyField(def, value, updates, snapshot, doc) {
   if ((def.type === "color" || def.type === "image") && writeValue === "") {
     writeValue = null;
   } else if (def.type === "flags") {
+    const flagsMap = def.options?.() ?? {};
+    let bitmask = 0;
     if (typeof writeValue === "number") {
-      const flagsMap = def.options?.() ?? {};
-      const bitmask = writeValue;
-      writeValue = Object.entries(flagsMap)
-        .filter(([, bit]) => (bitmask & bit) === bit)
-        .map(([n]) => n);
+      bitmask = writeValue;
+    } else if (Array.isArray(writeValue) || writeValue instanceof Set) {
+      for (const name of writeValue) {
+        const bit = flagsMap[name];
+        if (typeof bit === "number") bitmask |= bit;
+      }
     }
-    if (!Array.isArray(writeValue)) writeValue = [];
+    bitmask |= 1;
+    writeValue = bitmask;
   }
   for (const path of fieldPaths(def)) {
     if (snapshot) snapshot[path] = foundry.utils.getProperty(doc, path);

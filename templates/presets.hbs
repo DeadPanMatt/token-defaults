@@ -50,8 +50,11 @@
           {{/if}}
           {{else if (eq f.type "color")}}
           <color-picker value="{{f.value}}" disabled></color-picker>
+          {{else if (eq f.type "image")}}
+          <file-picker value="{{f.value}}" type="image" disabled></file-picker>
           {{/if}}
           {{/if}}
+          {{#if f.hint}}<p class="field-hint">{{localize f.hint}}</p>{{/if}}
         </div>
         {{/each}}
       </details>
@@ -111,8 +114,11 @@
           {{/if}}
           {{else if (eq f.type "color")}}
           <color-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}"></color-picker>
+          {{else if (eq f.type "image")}}
+          <file-picker name="presets.{{p.id}}.fields.{{f.key}}.value" value="{{f.value}}" type="image"></file-picker>
           {{/if}}
           {{/if}}
+          {{#if f.hint}}<p class="field-hint">{{localize f.hint}}</p>{{/if}}
         </div>
         {{/each}}
       </details>

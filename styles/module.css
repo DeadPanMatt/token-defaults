@@ -131,6 +131,14 @@
   opacity: 0.75;
 }
 
+.token-presets .field-hint {
+  grid-column: 1 / -1;
+  margin: 0.15em 0 0.25em;
+  font-style: italic;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
 .token-presets .field {
   display: grid;
   grid-template-columns: minmax(160px, 1fr) 1fr;

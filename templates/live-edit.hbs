@@ -75,9 +75,15 @@
       <color-picker name="fields.{{f.key}}.value"
                     {{#unless f.mixed}}value="{{f.value}}"{{/unless}}
                     placeholder="{{localize 'TOKEN_PRESETS.LiveEdit.mixed'}}"></color-picker>
+
+      {{else if (eq f.type "image")}}
+      <file-picker name="fields.{{f.key}}.value"
+                   type="image"
+                   {{#unless f.mixed}}value="{{f.value}}"{{/unless}}></file-picker>
       {{/if}}
 
       {{/if}}
+      {{#if f.hint}}<p class="field-hint">{{localize f.hint}}</p>{{/if}}
     </div>
     {{/each}}
   </details>

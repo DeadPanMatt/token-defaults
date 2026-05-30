@@ -20,9 +20,9 @@ Each preset can set any combination of:
 - Mirror horizontally / vertically
 - Tint colour
 - Dynamic Token Ring - enable on / off, ring and background colours,
-  any combination of ring effects (Ring Pulse, Ring Gradient,
-  Background Wave, Spectral Pulse, Color Over Subject), and a
-  subject-scale slider
+  subject texture (the artwork that sits inside the ring), any
+  combination of ring effects (Ring Pulse, Ring Gradient, Background
+  Wave, Spectral Pulse, Color Over Subject), and a subject-scale slider
 - Vision - vision enabled, vision range, vision angle, and vision
   mode (Basic Vision, Darkvision, Tremorsense, etc. — whatever your
   system / modules provide). *Heads up: if another module also

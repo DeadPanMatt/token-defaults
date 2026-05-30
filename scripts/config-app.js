@@ -116,6 +116,7 @@ export class PresetManager extends HandlebarsApplicationMixin(ApplicationV2) {
       const fieldCtx = {
         key,
         label: def.label,
+        hint: def.hint ?? null,
         type: def.type,
         plain: !!def.plain,
         value: f.value,

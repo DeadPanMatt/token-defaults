@@ -44,7 +44,7 @@
   "TOKEN_PRESETS.Tool.openLanding": "Token Presets…",
 
   "TOKEN_PRESETS.Landing.title": "Token Presets",
-  "TOKEN_PRESETS.Landing.prompt": "What would you like to do?",
+  "TOKEN_PRESETS.Landing.prompt": "Here you can...",
   "TOKEN_PRESETS.Landing.manage": "Manage / create Presets",
   "TOKEN_PRESETS.Landing.applyTokens": "Apply Preset to Canvas Tokens",
   "TOKEN_PRESETS.Landing.tagActors": "Tag Actors with a Preset",
@@ -58,6 +58,9 @@
   "TOKEN_PRESETS.LiveEdit.ok": "OK",
   "TOKEN_PRESETS.LiveEdit.noChanges": "No changes to apply.",
   "TOKEN_PRESETS.LiveEdit.done": "Updated {count} token(s).",
+  "TOKEN_PRESETS.LiveEdit.confirmTitle": "Confirm Changes",
+  "TOKEN_PRESETS.LiveEdit.confirmMessage": "Apply these changes to {count} token(s)? Cancelling will revert the preview.",
+  "TOKEN_PRESETS.LiveEdit.applyFailed": "Failed to apply changes. Check the console for details.",
   "TOKEN_PRESETS.LiveEdit.targetingPrefix": "Editing",
   "TOKEN_PRESETS.LiveEdit.targetingTokenSingular": "selected token. Fields where the tokens differ show as “Mixed”; only fields you change get written.",
   "TOKEN_PRESETS.LiveEdit.targetingTokenPlural": "selected tokens. Fields where the tokens differ show as “Mixed”; only fields you change get written.",
@@ -76,7 +79,7 @@
   "TOKEN_PRESETS.Folder.newFolderHere": "New Folder here",
   "TOKEN_PRESETS.Search.placeholder": "Search by name…",
 
-  "TOKEN_PRESETS.TokenFilter.label": "Filter Tokens",
+  "TOKEN_PRESETS.TokenFilter.label": "Filter Tokens using the options below",
   "TOKEN_PRESETS.TokenFilter.all": "All Tokens",
   "TOKEN_PRESETS.TokenFilter.dispositionLabel": "Disposition",
   "TOKEN_PRESETS.TokenFilter.hostile": "Hostile",
@@ -123,6 +126,8 @@
   "TOKEN_PRESETS.Field.ringEnabled": "Ring Enabled",
   "TOKEN_PRESETS.Field.ringColor": "Ring Color",
   "TOKEN_PRESETS.Field.ringBackground": "Background Color",
+  "TOKEN_PRESETS.Field.ringSubjectTexture": "Subject Texture",
+  "TOKEN_PRESETS.Field.ringSubjectTextureHint": "Explicitly specify a path for the artwork placed over the dynamic token ring. If not provided, the ring subject is the same as the standard token texture.",
   "TOKEN_PRESETS.Field.ringEffects": "Ring Effects",
   "TOKEN_PRESETS.Field.ringSubjectScale": "Subject Scale Correction",
 

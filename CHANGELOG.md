@@ -7,6 +7,57 @@ directly to tokens already on the canvas.
 
 ---
 
+## 0.20.0 - Subject Texture for the Dynamic Token Ring
+
+The Dynamic Token Ring section now includes the **Subject Texture**
+field. Pick a path with the folder button or type one in to set the artwork that sits *inside*
+the ring - useful when you want the ring around a token to display a
+different portrait or icon than the standard token texture.
+
+- Leave it blank to fall back to the standard token texture
+- Appears in both the **Manage / create Presets** form and the
+  **Edit Selected Tokens (Live)** form.
+- Previews in real time on the canvas as you change it via the live
+  edit form, including via the file-picker dialog.
+
+---
+
+## 0.19.0 - Live preview on the Edit Selected Tokens form
+
+The **Edit Selected Tokens (Live)** form now previews your changes on
+the canvas as you make them, with no risk of accidentally committing
+anything until you confirm.
+
+How it works:
+
+- Open the form against some selected tokens as usual.
+- Tick a Ring Effect, change a colour, drag the Scale slider, type a
+  new Vision Range, whatever - the canvas tokens update **as you do
+  it**, so you can see the result before you commit.
+- Click **Apply** and a small **Yes / No** confirmation pops up showing
+  the token count. Click **Yes** to write the changes permanently; click
+  **No** to keep the form open and carry on tweaking.
+- Close the form with the **X** at any time without applying, and every
+  selected token snaps back to exactly how it was when you opened the
+  form. Nothing was actually saved during the preview.
+
+A few useful properties:
+
+- **Only you see the preview.** Other GMs and players see nothing
+  change until you confirm - so you can experiment freely without
+  spoiling anything for the table.
+- **The preview is true to what will be saved.** What you see on the
+  canvas mid-preview is exactly what the **Apply** + **Yes** flow will
+  write to the database. No surprises between preview and commit.
+- **Foundry restarting cancels the preview.** If you close Foundry
+  mid-preview, the next time you open the world the tokens come back
+  as they were originally. The preview only ever exists in your
+  client's memory.
+- **If applying fails** (permissions, network, etc.) the form stays
+  open and tells you, so you don't lose your edits.
+
+---
+
 ## 0.18.2 - Performance and minor "Security" fixes
 
 - Fixed an issue where, after a right click was performed to create a new folder but the folder was never created, the right click function was still active.
@@ -26,10 +77,6 @@ Foundry shows in its own Token Config:
   (Basic Vision, Darkvision, Light Amplification, Monochromatic,
   Tremorsense, plus anything your system or modules add).
 
-Both pick up the "another module owns this field" disable / tooltip
-treatment from 0.18.0 automatically, so if Vision 5e is greying out
-the vision mode in Foundry's editor it'll be greyed out for us too.
-
 ---
 
 ## 0.18.0 - Respect other modules that own a field
@@ -39,18 +86,7 @@ suite, etc.) is automatically managing one of the fields a preset can
 write to, the preset manager and live-edit form now **disable that
 field and show the same tooltip the other module uses on Foundry's
 own Token Config**. Hover the greyed-out field to see the originating
-module's explanation - same behaviour you'd see on the default editor.
-
-How it works under the hood: every time you open Foundry's Token
-Config, this module quietly looks at which inputs ended up disabled
-and remembers the result per-field. From then on our forms mirror
-that state. The cache self-corrects: if you uninstall or disable the
-other module, the next time you open Token Config the field comes
-back as editable on our side automatically.
-
-No setup required - it picks the cache up the first time you open
-Token Config on any token in a world where another module is doing
-the disabling.
+module's explanation.
 
 ---
 
@@ -64,11 +100,6 @@ the disabling.
 This appears as a fourth section in the preset manager (after Identity,
 Appearance, and Dynamic Token Ring) and is also available in the live
 edit form.
-
-> **Heads up:** if another module also manages token vision (vision
-> overhauls, dynamic-lighting suites, perception-system rewrites, etc.)
-> its behaviour may override what this preset writes. Foundry-default
-> vision is the only case guaranteed to work as you'd expect.
 
 **Live-edit polishes:**
 
@@ -100,21 +131,7 @@ tokens agree on it, or **-Mixed-** when they differ:
 
 Only fields you actually change get written. So if you select five
 tokens with different scales and just tick the **Lock Rotation** box,
-the five different scales are preserved - only Lock Rotation flips.
-
-Use it when:
-
-- You want to recolour a handful of summons all at once without making
-  a preset.
-- You realised mid-session that your party tokens need their disposition
-  fixed and don't want to right-click each one.
-- You want a quick way to tweak ring effects on a group without
-  visiting Token Config five times.
-
-To open it: select your tokens on the canvas first, then click the
-user-gear icon in Token Controls and pick **Edit Selected Tokens
-(Live)**. If you forget to select anything, the option just warns and
-bails.
+the five different scales are preserved - only Lock Rotation chnages.
 
 ---
 
@@ -132,9 +149,7 @@ got.
 
 ## 0.15.0 - Dynamic Token Ring is back
 
-A new **Dynamic Token Ring** section appears in the preset manager
-(removed in 0.10.1, brought back now that Foundry V14 has settled on
-its schema):
+A new **Dynamic Token Ring** section appears in the preset manager.
 
 - **Ring Enabled** - toggle the ring on or off.
 - **Ring Color** and **Background Color** - colour pickers for both.
@@ -142,10 +157,6 @@ its schema):
   Background Wave, Spectral Pulse, and Color Over Subject. Same options
   and the same labels as Foundry's own Token Config dialog.
 - **Subject Scale Correction** - slider from 0.5× to 3×.
-
-The subject texture path isn't a preset field; it's usually different
-per actor so a shared preset wouldn't really help. Set it in Token
-Config when you need to.
 
 A couple of related visual changes that came along for the ride:
 

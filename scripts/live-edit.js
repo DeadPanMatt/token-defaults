@@ -7,8 +7,7 @@ import {
 } from "./constants.js";
 import { applyConflictDisable } from "./conflict-detection.js";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
+const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
 const MIXED = "__token-presets:mixed__";
 
@@ -25,7 +24,7 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
     position: { width: 560, height: 640 },
     form: {
       handler: LiveEditForm.#onSubmit,
-      closeOnSubmit: true,
+      closeOnSubmit: false,
       submitOnChange: false
     }
   };
@@ -39,12 +38,29 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   #tokens = [];
-
   #initial = new Map();
+  #originalSnapshots = new Map();
+  #committed = false;
+  #onPreviewChange = () => this.#previewChanges();
 
   constructor(tokens, options = {}) {
     super(options);
     this.#tokens = Array.isArray(tokens) ? tokens.filter(Boolean) : [];
+    this.#snapshotOriginal();
+  }
+
+  #snapshotOriginal() {
+    for (const td of this.#tokens) {
+      const snap = {};
+      for (const def of Object.values(FIELD_DEFS)) {
+        const paths = def.paths ?? (def.path ? [def.path] : []);
+        for (const path of paths) {
+          const v = foundry.utils.getProperty(td, path);
+          snap[path] = v instanceof Set ? Array.from(v) : foundry.utils.deepClone(v);
+        }
+      }
+      this.#originalSnapshots.set(td.id, snap);
+    }
   }
 
   async _prepareContext(_options) {
@@ -88,6 +104,7 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const ctx = {
       key,
       label: def.label,
+      hint: def.hint ?? null,
       type: def.type,
       plain: !!def.plain,
       mixed,
@@ -161,12 +178,18 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
       cb.indeterminate = true;
     }
     applyConflictDisable(this.element);
+    this.element.addEventListener("change", this.#onPreviewChange);
+    this.element.addEventListener("input", this.#onPreviewChange);
   }
 
-  static async #onSubmit(_event, _form, formData) {
-    const submitted = foundry.utils.expandObject(formData?.object ?? {});
-    const fields = submitted.fields ?? {};
+  #computeDirty() {
+    if (!this.element) return { scalarChanges: new Map(), flagDecisions: new Map() };
+    const FDE = foundry.applications?.ux?.FormDataExtended ?? FormDataExtended;
+    const formData = new FDE(this.element).object;
+    const expanded = foundry.utils.expandObject(formData ?? {});
+    const fields = expanded.fields ?? {};
     const rootEl = this.element;
+
     const scalarChanges = new Map();
     const flagDecisions = new Map();
 
@@ -180,44 +203,135 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
       if (change.changed) scalarChanges.set(key, change.value);
     }
 
+    return { scalarChanges, flagDecisions };
+  }
+
+  #previewChanges() {
+    const { scalarChanges, flagDecisions } = this.#computeDirty();
+
+    for (const tokenDoc of this.#tokens) {
+      this.#restoreOne(tokenDoc);
+
+      const update = {};
+      let hasChange = false;
+      for (const [key, value] of scalarChanges) {
+        const def = FIELD_DEFS[key];
+        applyField(def, value, update, null, tokenDoc);
+        hasChange = true;
+      }
+      for (const [key, decisions] of flagDecisions) {
+        const def = FIELD_DEFS[key];
+        const resolved = this.#resolveFlagsForToken(def, decisions, tokenDoc);
+        applyField(def, resolved, update, null, tokenDoc);
+        hasChange = true;
+      }
+
+      if (hasChange) {
+        try {
+          tokenDoc.updateSource(update);
+        } catch (err) {
+          console.error(`${MODULE_ID} | preview updateSource failed`, err);
+        }
+      }
+      this.#refreshOne(tokenDoc);
+    }
+  }
+
+  #restoreOne(tokenDoc) {
+    const snap = this.#originalSnapshots.get(tokenDoc.id);
+    if (!snap) return;
+    const update = {};
+    for (const [path, value] of Object.entries(snap)) {
+      foundry.utils.setProperty(update, path, value);
+    }
+    try {
+      tokenDoc.updateSource(update);
+    } catch (err) {
+      console.error(`${MODULE_ID} | restore updateSource failed`, err);
+    }
+  }
+
+  #refreshOne(tokenDoc) {
+    tokenDoc.object?.draw?.().catch(() => {});
+  }
+
+  #revertAllAndRefresh() {
+    for (const tokenDoc of this.#tokens) {
+      this.#restoreOne(tokenDoc);
+      this.#refreshOne(tokenDoc);
+    }
+  }
+
+  static async #onSubmit(_event, _form, _formData) {
+    const { scalarChanges, flagDecisions } = this.#computeDirty();
+
     if (!scalarChanges.size && !flagDecisions.size) {
       ui.notifications?.info(game.i18n.localize("TOKEN_PRESETS.LiveEdit.noChanges"));
       return;
     }
 
-    const updatesByScene = new Map();
-    let touched = 0;
+    const confirmed = await DialogV2.confirm({
+      window: {
+        title: game.i18n.localize("TOKEN_PRESETS.LiveEdit.confirmTitle"),
+        icon: "fa-solid fa-circle-question"
+      },
+      content: `<p>${game.i18n.format("TOKEN_PRESETS.LiveEdit.confirmMessage", { count: this.#tokens.length })}</p>`,
+      rejectClose: false
+    }).catch(() => false);
 
+    if (!confirmed) return;
+
+    this.#revertAllAndRefresh();
+
+    const updatesByScene = new Map();
     for (const tokenDoc of this.#tokens) {
       const scene = tokenDoc.parent;
       if (!scene) continue;
 
       const update = { _id: tokenDoc.id };
+      let hasChange = false;
       for (const [key, value] of scalarChanges) {
         const def = FIELD_DEFS[key];
         applyField(def, value, update, null, tokenDoc);
+        hasChange = true;
       }
-
       for (const [key, decisions] of flagDecisions) {
         const def = FIELD_DEFS[key];
         const resolved = this.#resolveFlagsForToken(def, decisions, tokenDoc);
         applyField(def, resolved, update, null, tokenDoc);
+        hasChange = true;
       }
 
-      touched++;
+      if (!hasChange) continue;
       const arr = updatesByScene.get(scene) ?? [];
       arr.push(update);
       updatesByScene.set(scene, arr);
     }
 
     let totalUpdated = 0;
-    for (const [scene, updates] of updatesByScene) {
-      await scene.updateEmbeddedDocuments("Token", updates);
-      totalUpdated += updates.length;
+    try {
+      for (const [scene, updates] of updatesByScene) {
+        await scene.updateEmbeddedDocuments("Token", updates);
+        totalUpdated += updates.length;
+      }
+      this.#committed = true;
+    } catch (err) {
+      console.error(`${MODULE_ID} | live edit persist failed`, err);
+      ui.notifications?.error(game.i18n.localize("TOKEN_PRESETS.LiveEdit.applyFailed"));
+      return;
     }
+
     ui.notifications?.info(
       game.i18n.format("TOKEN_PRESETS.LiveEdit.done", { count: totalUpdated })
     );
+    await this.close();
+  }
+
+  async close(options = {}) {
+    if (!this.#committed) {
+      this.#revertAllAndRefresh();
+    }
+    return super.close(options);
   }
 
   #scalarFieldChange(key, def, submittedFields, rootEl) {
@@ -255,12 +369,15 @@ export class LiveEditForm extends HandlebarsApplicationMixin(ApplicationV2) {
       return { changed: true, value };
     }
 
-    if (def.type === "color") {
+    if (def.type === "color" || def.type === "image") {
       const raw = submitted?.value;
       if (raw === undefined) return { changed: false };
       const value = raw === "" ? "" : raw;
       if (initial !== MIXED && value === initial) return { changed: false };
       if (initial === MIXED && value === "") return { changed: false };
+      if (def.type === "image" && value && !/\.[a-z0-9]{2,5}$/i.test(value)) {
+        return { changed: false };
+      }
       return { changed: true, value };
     }
 
